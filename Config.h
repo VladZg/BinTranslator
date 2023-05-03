@@ -1,0 +1,6 @@
+#ifndef BIN_TRANSLATOR_CONFIG_H
+#define BIN_TRANSLATOR_CONFIG_H
+
+
+
+#endif
