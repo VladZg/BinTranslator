@@ -1,0 +1,110 @@
+[ assembly command ]          [ ip ] [cmd ] [  arg1  ] [  arg2  ]
+                  in          [0000] [0008]
+                  in          [0001] [0008]
+                 sub          [0002] [0003]
+                 out          [0003] [0006]
+                 hlt          [0004] [0000]
+
+Named labels
+{
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+}

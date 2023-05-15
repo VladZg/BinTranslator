@@ -1,0 +1,11 @@
+//DEF_SEP(sep_code, sep_name, sep_lang_name, sep_tree_name)
+
+DEF_SEP(1, L_ROUND_BRACKET , "(", "(", "pupa("   )
+DEF_SEP(2, R_ROUND_BRACKET , ")", ")", ")lupa"   )
+DEF_SEP(3, L_FIGURE_BRACKET, "{", "{", "vot"     )
+DEF_SEP(4, R_FIGURE_BRACKET, "}", "}", "tak"     )
+DEF_SEP(5, L_SQUARE_BRACKET, "[", "[", "pik"     )
+DEF_SEP(6, R_SQUARE_BRACKET, "]", "]", "puk"     )
+DEF_SEP(7, SEMI_COLON      , ";", ";", "kanets"  )
+DEF_SEP(8, COMMA           , ",", ",", "zapytaya")
+DEF_SEP(9, DOT             , ".", ".", "tochka"  )

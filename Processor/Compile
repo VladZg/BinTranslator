@@ -1,0 +1,37 @@
+ASM_TARGET = asm
+CPU_TARGET = cpu
+DISASM_TARGET = disasm
+
+CC = g++
+CFLAGS = # -g -fsanitize=address
+
+ROOT_DIR = ./
+LIB_DIR = ./Libs/
+SRC_DIR = ./Source/
+APP_DIR = App/
+
+ASM_SRC = 		$(ROOT_DIR)$(SRC_DIR)asm.cpp 						\
+				$(ROOT_DIR)$(LIB_DIR)Onegin/Source/functions.cpp
+CPU_SRC = 		$(ROOT_DIR)$(SRC_DIR)cpu.cpp						\
+				$(ROOT_DIR)$(LIB_DIR)Stack/Source/Stack.cpp			\
+				$(ROOT_DIR)$(LIB_DIR)Stack/Source/Log.cpp 			\
+				$(ROOT_DIR)$(LIB_DIR)Stack/Source/HashCounters.cpp	\
+				$(ROOT_DIR)$(LIB_DIR)Onegin/Source/functions.cpp
+DISASM_SRC = 	$(ROOT_DIR)$(SRC_DIR)disasm.cpp
+
+all: create_app_folder $(ASM_TARGET) $(CPU_TARGET) $(DISASM_TARGET)
+
+create_app_folder :
+	@mkdir -p ./App
+
+$(ASM_TARGET) :
+	@$(CC) $(CFLAGS) $(ASM_SRC) -o $(ROOT_DIR)$(APP_DIR)$(ASM_TARGET)
+
+$(DISASM_TARGET) :
+	@$(CC) $(CFLAGS) $(DISASM_SRC) -o $(ROOT_DIR)$(APP_DIR)$(DISASM_TARGET)
+
+$(CPU_TARGET) :
+	@$(CC) $(CFLAGS) $(CPU_SRC) -o $(ROOT_DIR)$(APP_DIR)$(CPU_TARGET)
+
+clean :
+	@rm -R -f *.o $(ROOT_DIR)$(APP_DIR)

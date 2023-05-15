@@ -1,0 +1,24 @@
+ASM = asm
+CPU = cpu
+DISASM = disasm
+
+ROOT_DIR = ./
+APP_DIR = App/
+# OUT_DIR = ./
+
+ASM_TARGET = Source.exe
+DISASM_TARGET = Source.dsm
+
+all: asm disasm run
+
+asm:
+	@$(ROOT_DIR)$(APP_DIR)$(ASM) $(filename)
+
+disasm :
+	@$(ROOT_DIR)$(APP_DIR)$(DISASM) $(ASM_TARGET)
+
+run :
+	@$(ROOT_DIR)$(APP_DIR)$(CPU) $(ASM_TARGET)
+
+clean :
+	@rm -f $(ROOT_DIR)$(ASM_TARGET) $(ROOT_DIR)$(DISASM_TARGET) $(ROOT_DIR)Asm_listing.lst

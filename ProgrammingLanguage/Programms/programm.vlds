@@ -1,0 +1,16 @@
+scanf ( init x = 0 , init y = 0 ) ;
+init z = 0 ;
+
+printf ( sin ( 1571 ) , cos ( 3141 ) ) ;
+
+init mul ( )
+{
+    return x * y ;
+}
+
+init pow ( )
+{
+    return x ^ y ;
+}
+
+printf ( pow ( ) , mul ( ) , pow ( ) / mul ( ) ) ;
