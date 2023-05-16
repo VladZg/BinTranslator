@@ -1,5 +1,5 @@
-#define S_POP                   \
+#define S_POP                           \
     StackPop(&STACK)
 
-#define S_PUSH( val )           \
-    StackPush(&STACK, val)
+#define S_PUSH( val )                   \
+    StackPush(&STACK, (Elem_t)(val))

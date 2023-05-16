@@ -18,6 +18,6 @@
 
 #include "./Consts.h"
 
-typedef int Elem_t;
+typedef double Elem_t;
 
 #endif

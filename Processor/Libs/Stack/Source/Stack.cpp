@@ -76,6 +76,11 @@ void print_stack_elem(float elem)
     WriteLog("%f", elem);
 }
 
+void print_stack_elem(double elem)
+{
+    WriteLog("%lf", elem);
+}
+
 void print_stack_elem(char elem)
 {
     WriteLog("%c", elem);
@@ -96,6 +101,12 @@ void poisoned(int* elem)
 void poisoned(float* elem)
 {
     float tmp_float_poisoned = (float) float_poisoned;
+    *elem = tmp_float_poisoned;
+}
+
+void poisoned(double* elem)
+{
+    double tmp_float_poisoned = (double) float_poisoned;
     *elem = tmp_float_poisoned;
 }
 

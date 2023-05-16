@@ -25,9 +25,9 @@ enum ArgsInfo
       REGISTER  = 2,
       RAM_ELEM  = 3,
 
-      ARG_IMMED = 32,
-      ARG_REG   = 64,
-      ARG_MEM   = 128,
+      ARG_IMMED = 32,   // 00010000
+      ARG_REG   = 64,   // 00100000
+      ARG_MEM   = 128,  // 01000000
 };
 
 enum ErrCodes
@@ -40,8 +40,6 @@ enum ErrCodes
       LBL_ERR_CODE         = 6,
 };
 
-int START_REGS[7] = {0, 0, 0, 0, 0, 0, 0};
-
 #define DEF_REG( name, num )              \
       REG_##name = num,                   \
 
@@ -49,8 +47,10 @@ enum RegistersInfo
 {
       #include "./Reg.h"
 
-      REGS_SIZE = 6,
+      REGS_SIZE = 8,
 };
+
+int START_REGS[REGS_SIZE+1] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 #undef DEF_REG
 
@@ -77,6 +77,11 @@ enum OtherInfo
       TECH_INFO_SIZE   = 3,
 
       CMD_CODE_MASK    = 31,
+};
+
+enum NumInfo
+{
+      DOUBLE_PRESICION   = 10000000
 };
 
 const char  LBL_POISON_NAME[LBLNAME_MAXSIZE] = "LABEL POISON";

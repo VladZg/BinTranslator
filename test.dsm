@@ -1,0 +1,28 @@
+IN 
+POP rbx 
+PUSH rbx 
+PUSH 0 
+JE 49 
+PUSH 1 
+POP rcx 
+CALL 51 
+PRINT rcx 
+DUMP -1 -1
+JMP 0 
+RUS 
+HLT 
+PUSH -1 + rbx 
+PUSH 0 
+JBE 105 
+PUSH rbx 
+PUSH rcx 
+MUL 
+POP rcx 
+PUSH -1 + rbx 
+POP rbx 
+CALL 51 
+PUSH rcx 
+PUSH rbx 
+MUL 
+POP rcx 
+RET 

@@ -1,5 +1,4 @@
-in
-in
-sub
-out
-hlt
+main
+{
+    hlt
+}

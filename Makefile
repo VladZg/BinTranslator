@@ -1,18 +1,16 @@
-ASM_DIR = ./AsmProgs/
-filename = test
-
+TARGET = ./app
+CFLAGS = -fsanitize=leak -O3
 NO_OUT = >/dev/null
 
-all: run
+SOURCE = ./app.cpp ./Source/Translator.cpp
 
-run: asm_compile files_rename bin_translate
+all: recompile_processor compile run
 
-asm_compile:
-	@make -f ./Processor/Run ROOT_DIR=./Processor/ filename=./AsmProgs/$(filename).asm $(NO_OUT)
+compile:
+	@g++ $(SOURCE) $(CFLAGS) -o $(TARGET)
 
-files_rename:
-	@mv -v ./Source.dsm ./$(filename).dsm $(NO_OUT)
-	@mv -v ./Source.exe ./$(filename).exe $(NO_OUT)
-	@mv -v ./Source.lst ./$(filename).lst $(NO_OUT)
+recompile_processor:
+	@make -f ./Processor/Compile ROOT_DIR=./Processor/ $(NO_OUT)
 
-bin_translate:
+run:
+	@$(TARGET)

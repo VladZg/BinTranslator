@@ -1,5 +1,86 @@
 IN 
+POP rax 
 IN 
-SUB 
-OUT 
+POP rbx 
+IN 
+POP rcx 
+PUSH 0 
+PUSH rax 
+JE 43 
+CALL 79 
+JMP 68 
+PUSH rbx 
+POP rax 
+PUSH rcx 
+POP rbx 
+CALL 200 
+PRINT 52 
+JMP 0 
 HLT 
+CALL 249 
+PUSH rdx 
+PUSH 0 
+JAE 109 
+PRINT 0 
+JMP 199 
+PUSH rdx 
+PUSH 0 
+JNE 134 
+CALL 284 
+JMP 199 
+PUSH rbx 
+PUSH -1 
+MUL 
+PUSH rdx 
+ADD 
+PUSH rax 
+PUSH 2 
+MUL 
+DIV 
+PUSH rbx 
+PUSH -1 
+MUL 
+PUSH rdx 
+SUB 
+PUSH rax 
+PUSH 2 
+MUL 
+DIV 
+PRINT 2 
+OUT 
+OUT 
+RET 
+PUSH rax 
+PUSH 0 
+JE 225 
+PRINT -11 
+JMP 248 
+PUSH rbx 
+PUSH -1 
+MUL 
+PUSH rax 
+DIV 
+PRINT 1 
+OUT 
+RET 
+PUSH rbx 
+PUSH 2 
+POW 
+PUSH 4 
+PUSH rax 
+MUL 
+PUSH rcx 
+MUL 
+SUB 
+POP rdx 
+RET 
+PUSH rbx 
+PUSH -1 
+MUL 
+PUSH 2 
+PUSH rax 
+MUL 
+DIV 
+PRINT 1 
+OUT 
+RET 

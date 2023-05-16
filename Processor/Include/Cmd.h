@@ -33,7 +33,7 @@ DEF_CMD (ADD,  2,  0,
 
 DEF_CMD (SUB,  3,  0,
     {
-        int num = S_POP;
+        Elem_t num = S_POP;
 
         S_PUSH(S_POP - num);
 
@@ -49,9 +49,9 @@ DEF_CMD (MUL,  4,  0,
 
 DEF_CMD (DIV,  5,  0,
     {
-        int num = S_POP;
+        Elem_t num = S_POP;
 
-        if (num)
+        if (num != 0)
         {
             S_PUSH(S_POP / num);
 
@@ -63,26 +63,26 @@ DEF_CMD (DIV,  5,  0,
 
 DEF_CMD (OUT,  6,  0,
     {
-        int popped = S_POP;
+        Elem_t popped = S_POP;
 
         SimpleStackDump(&STACK);
 
-        fprintf(stderr, "    %d ", popped);
+        fprintf(stderr, "    %lf ", popped);
 
-        if (popped == RAM_POISON) fprintf(stderr, KGRN "(RAM poison)" KNRM);
+        // if (popped == RAM_POISON) fprintf(stderr, KGRN "(RAM poison)" KNRM);
 
-        fprintf(stderr, "\n\n");
+        fprintf(stderr, "\n");
     })
 
 DEF_DUMP (DUMP, 7)
 
 DEF_CMD (IN,  8,  0,
     {
-        int num = 0;
+        Elem_t num = 0;
 
         fprintf(stderr, "  Type a number, it'll be used in calculatings: ");
 
-        if (scanf("%d", &num))
+        if (scanf("%lf", &num))
         {
             S_PUSH(num);
 
@@ -116,7 +116,7 @@ DEF_CMD (POP,  9,  1,
 
         else CpuError(&cpu, file, ARG_TYPE_ERR_CODE, "WRONG TYPE OF POP ARGUMENT");
 
-        *arg = S_POP;
+        *arg = rint(S_POP);
 
         SimpleStackDump(&STACK);
         RegsDump(cpu.Regs);
@@ -152,12 +152,18 @@ DEF_CMD (PRINT, 19, 1,
     {
         int arg_temp = 0;
         int* arg = GetArg(&cpu, cmd, &arg_temp);
-        fprintf(stderr, "    ARGUMENT: %d ", *arg);
 
-        if (*arg == RAM_POISON)
-            fprintf(stderr, "(RAM POISONED)");
+        if (*arg != 121396)
+        {
+            fprintf(stderr, "    ARGUMENT: %d ", *arg);
 
-        fprintf(stderr, "\n\n");
+            if (*arg == RAM_POISON)
+                fprintf(stderr, "(RAM POISONED)");
+
+            fprintf(stderr, "\n");
+        }
+
+        else fprintf(stderr, "\n");
     })
 
 DEF_CMD (RAM, 20, 0,
@@ -188,28 +194,28 @@ DEF_JMP (CALL, 21, 1,
 
 DEF_CMD (RET, 22, 0,
     {
-        IP = StackPop(&cpu.stack_addr_ret);
+        IP = rint(StackPop(&cpu.stack_addr_ret));
     })
 
-DEF_CMD (SIN, 23, 1,
+DEF_CMD (SIN, 23, 0,
     {
-        int arg_temp = 0;
-        int* arg = GetArg(&cpu, cmd, &arg_temp);
+        // int arg_temp = 0;
+        // int* arg = GetArg(&cpu, cmd, &arg_temp);
 
         // fprintf(stderr, "ARG: %f", ((float) (*arg)) / 10000000);
-        S_PUSH(rintf((sinf(((float) (*arg)) / 10000000) * 10000000)));
+        S_PUSH(sin(S_POP / DOUBLE_PRESICION));
         // fprintf(stderr, "\nSIN: %f\n", (sinf(((float) (*arg)) / 10000000)));
 
         SimpleStackDump(&STACK);
     })
 
-DEF_CMD (COS, 24, 1,
+DEF_CMD (COS, 24, 0,
     {
-        int arg_temp = 0;
-        int* arg = GetArg(&cpu, cmd, &arg_temp);
+        // int arg_temp = 0;
+        // int* arg = GetArg(&cpu, cmd, &arg_temp);
 
         // fprintf(stderr, "ARG: %f", ((float) (*arg)) / 10000000);
-        S_PUSH(rintf((cosf(((float) (*arg)) / 10000000)) * 10000000));
+        S_PUSH(cos(S_POP / DOUBLE_PRESICION));
         // fprintf(stderr, "\nCOS: %f\n", (cosf(((float) (*arg)) / 10000000)));
 
         SimpleStackDump(&STACK);
@@ -232,7 +238,7 @@ DEF_CMD(CLEAR_RAM, 26, 0,
             cpu.RAM[i] = RAM_POISON;
     })
 
-DEF_CMD(SQUARE, 27, 0,
+DEF_CMD(SQRT, 27, 0,
     {
         S_PUSH(sqrt(S_POP));
     })
@@ -248,7 +254,11 @@ DEF_CMD(DELAY, 28, 1,
         nanosleep(&t_r, &t_w);
     })
 
-DEF_CMD(OUT_FLOAT, 29, 0,
+DEF_CMD (POW,  29,  0,
     {
-        fprintf(stderr, "    %.5f\n", S_POP / 1000.0);
+        double degree = S_POP;
+
+        S_PUSH(pow(S_POP, degree));
+
+        SimpleStackDump(&STACK);
     })

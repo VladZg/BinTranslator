@@ -4,20 +4,34 @@
 #include <sys/mman.h>
 #include <limits.h>
 #include "./Include/Assert.h"
+#include "./Include/Defines.h"
+#include "./Include/Translator.h"
 
-#ifndef PAGESIZE
-#define PAGESIZE 4096
-#endif
-
-typedef unsigned char BYTE;
+#define PASTE(byte) PasteInBuf(buf, buf_index, byte)
 
 int main()
 {
-    BYTE* buf = (BYTE*) malloc(10);
+    int buf_size = PAGESIZE;
+    BYTE* buf = (BYTE*) aligned_alloc(PAGESIZE, buf_size);
     ASSERT(buf != nullptr);
-    buf = (BYTE*)(((long int) buf + PAGESIZE-1) & ~(PAGESIZE-1));   // выравнивание по длине страницы
-    int mprotect_res = mprotect(buf, 16, PROT_EXEC);
-    ASSERT(mprotect_res != 0);
+    int mprotect_res = mprotect(buf, buf_size, PROT_READ | PROT_WRITE | PROT_EXEC);
+    ASSERT(mprotect_res == 0);
+
+    FillBuf(buf, buf_size, 0x00);
+
+    int buf_index = 0;
+
+    PASTE(0x60);    // pusha
+    // PASTE(0x);
+    PASTE(0x61);    // popa
+    PASTE(0xC3);    // retn
+    // print_buf(buf, buf_size);
+
+    ASSERT(mprotect_res == 0);
+    void (*func)() = (void (*)())(buf);
+    func();
+
+    free(buf);
 
     return 1;
 }

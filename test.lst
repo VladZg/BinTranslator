@@ -1,0 +1,138 @@
+[ assembly command ]          [ ip ] [cmd ] [  arg1  ] [  arg2  ]
+               main:          
+              start:          
+                  in          [0000] [0008] 
+             pop rbx          [0001] [0073] [00000002] 
+            push rbx          [0006] [0065] [00000002] 
+              push 0          [0011] [0033] [00000000] 
+           je finish          [0016] [0015] [00000031] 
+              push 1          [0021] [0033] [00000001] 
+             pop rcx          [0026] [0073] [00000003] 
+      call factorial          [0031] [0021] [00000033] 
+           print rcx          [0036] [0083] [00000003] 
+           dump full          [0041] [0007] [ffffffff] [ffffffff] 
+           jmp start          [0044] [0010] [00000000] 
+             finish:          
+                 RUS          [0049] [0018] 
+                 hlt          [0050] [0000] 
+          factorial:          
+       push -1 + rbx          [0051] [0097] [ffffffff] [00000002] 
+              push 0          [0060] [0033] [00000000] 
+    jbe exit_factorial          [0065] [0012] [00000069] 
+            push rbx          [0070] [0065] [00000002] 
+            push rcx          [0075] [0065] [00000003] 
+                 mul          [0080] [0004] 
+             pop rcx          [0081] [0073] [00000003] 
+       push -1 + rbx          [0086] [0097] [ffffffff] [00000002] 
+             pop rbx          [0095] [0073] [00000002] 
+      call factorial          [0100] [0021] [00000033] 
+     exit_factorial:          
+            push rcx          [0105] [0065] [00000003] 
+            push rbx          [0110] [0065] [00000002] 
+                 mul          [0115] [0004] 
+             pop rcx          [0116] [0073] [00000003] 
+                 ret          [0121] [0022] 
+
+Named labels
+{
+    "                main" = 0
+    "               start" = 0
+    "              finish" = 49
+    "           factorial" = 51
+    "      exit_factorial" = 105
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+}
