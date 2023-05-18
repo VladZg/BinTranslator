@@ -2,6 +2,7 @@
 #define DEFINES_H
 
 #include "../Config.h"
+#include ".././Processor/Libs/Stack/Include/ColourConsts.h"
 
 #ifndef PAGESIZE
 #define PAGESIZE 4096
@@ -12,7 +13,7 @@ typedef long unsigned int ADDRESS;
 
 #define FUNC_NAME(cmd)                      \
 {                                           \
-    printf("%s:\n", __PRETTY_FUNCTION__);   \
+    printf(KCYN "%s" KNRM ":\n", __PRETTY_FUNCTION__);   \
     cmd                                     \
     printf("\n");                           \
 }

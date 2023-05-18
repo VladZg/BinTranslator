@@ -25,9 +25,11 @@ int main(const int argc, const char** argv)
     ASSERT(bin_file != nullptr);
 
     IR ir = {};
-    IRCtor(&ir, bin_file, CTOR_DUMP_MODE);
+    IRCtor(&ir, bin_file, CTOR_NDUMP_MODE);
+    fclose(bin_file);
 
-    PatchIR(&ir, bin_file);
+    PatchIR(&ir);
+    IRDump(ir);
 
     IRDtor(&ir);
 

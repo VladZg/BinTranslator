@@ -5,12 +5,13 @@
 // #include <stdlib.h>
 #include "../Processor/Include/Constants.h"
 #include "../Processor/Include/TechInfo.h"
+#include "./Defines.h"
 
 enum ArgLocation
 {
-    STACK   ,
-    REG     ,
-    MEM     ,
+    ARG_STACK_LOC   ,
+    ARG_REG_LOC     ,
+    ARG_MEM_LOC     ,
 };
 
 struct Command
@@ -18,13 +19,14 @@ struct Command
     size_t      pc      ;
     int         cmd_code;
     size_t      n_args  ;
-    int*        args    ;
+    int         args[2]  ;
     ArgLocation arg_loc ;
 };
 
 struct IR
 {
     TechInfo    info    ;
+    BYTE*       bin_code;
     Command*    commands;
     size_t      n_cmds  ;
 };
@@ -50,6 +52,9 @@ int IRCtor(IR* ir, FILE* bin_file, CtorDumpMode mode = CTOR_NDUMP_MODE);
 IRStatusCode IRVerify(IR ir);
 int IRDtor(IR* ir);
 void IRDump(IR ir);
-int PatchIR(const IR* ir, FILE* bin_file);
+
+void CommandDump(Command command);
+int PatchCommand(Command* command, const BYTE* bin_code, size_t pc);
+int PatchIR(IR* ir);
 
 #endif

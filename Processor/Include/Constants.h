@@ -10,7 +10,7 @@
 #define DEF_DUMP(name, num, ...)            \
             DEF_CMD(name, num)
 
-enum Comands      //автогенерация enuma команд
+enum CommandCode      //автогенерация enuma команд
 {
       #include "./Cmd.h"
 };
