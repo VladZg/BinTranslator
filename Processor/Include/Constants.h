@@ -50,8 +50,6 @@ enum RegistersInfo
       REGS_SIZE = 8,
 };
 
-int START_REGS[REGS_SIZE+1] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-
 #undef DEF_REG
 
 enum RAMInfo

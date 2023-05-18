@@ -84,12 +84,14 @@ int IsFridayToday()
     return !abs(real_time->tm_wday - 5);
 }
 
+int start_regs[REGS_SIZE+1] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+
 void CpuCtor(Cpu* cpu, int code_size, FILE* file)
 {
     ASSERT(cpu != NULL);
     ASSERT(file != NULL);
 
-    cpu->Regs = START_REGS;
+    cpu->Regs = start_regs;
 
     cpu->code_size = code_size;
 

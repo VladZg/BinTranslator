@@ -3,6 +3,7 @@
 #include <cstring>
 #include "../Include/Assert.h"
 #include "../Include/Defines.h"
+#include "../Include/IR.h"
 
 void PasteInBuf(BYTE* buf, int buf_index, BYTE byte)
 {

@@ -1,28 +1,52 @@
-IN 
-POP rbx 
-PUSH rbx 
-PUSH 0 
-JE 49 
-PUSH 1 
-POP rcx 
-CALL 51 
-PRINT rcx 
-DUMP -1 -1
-JMP 0 
-RUS 
+PUSH 5 
+POP rdx 
+CALL 181 
 HLT 
-PUSH -1 + rbx 
 PUSH 0 
-JBE 105 
-PUSH rbx 
-PUSH rcx 
-MUL 
-POP rcx 
-PUSH -1 + rbx 
+PUSH 0 
+PUSH 0 
+POP rax 
 POP rbx 
-CALL 51 
-PUSH rcx 
-PUSH rbx 
-MUL 
 POP rcx 
+RET 
+POP rax 
+PUSH 0 
+POP [rax]
+RET 
+PUSH 1 + rbx 
+POP rbx 
+PUSH -30 
+PUSH rcx 
+ADD 
+POP rcx 
+PUSH rcx 
+COS 
+PUSH rdx 
+MUL 
+PUSH 2 
+MUL 
+PUSH 41 
+ADD 
+PUSH rcx 
+SIN 
+PUSH rdx 
+MUL 
+PUSH 11 
+ADD 
+POP rfx 
+PUSH -1 + rfx 
+PUSH 81 
+MUL 
+ADD 
+CALL 47 
+PUSH 1 + rbx 
+PUSH -48 
+JBE 63 
+RET 
+CALL 16 
+CLEAR_RAM 
+CALL 63 
+CLEAR_CONSOLE 
+RAM 
+DELAY 100 
 RET 
