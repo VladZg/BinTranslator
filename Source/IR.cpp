@@ -123,6 +123,19 @@ int IRDtor(IR* ir)
     return 1;
 }
 
+static void BinCodeDump(const BYTE* bin_code, size_t n_bytes, const char* tabulation)
+{
+    size_t str_len = 32;
+
+    for (size_t byte_index = 0; byte_index < n_bytes; byte_index++)
+    {
+        printf("%s", byte_index % str_len == 0 ? tabulation : "");
+        printf("%02X %s", bin_code[byte_index], (byte_index + 1) % str_len == 0 ? "\n" : "");
+    }
+
+    printf("\n");
+}
+
 void IRDump(IR ir)
 {
     VERIFY_IR(ir)
@@ -142,6 +155,9 @@ void IRDump(IR ir)
         CommandDump(ir.commands[cmd_index]);
     }
 
+    printf("               }               \n"                   );
+    printf("    bin_code = {               \n"                   );
+    BinCodeDump(ir.bin_code, ir.info.code_size, "                ");
     printf("               }               \n"                   );
     )
 }
@@ -169,19 +185,105 @@ const char* TranslateCmdCodeToCmdName(CommandCode cmd_code)
 #undef DEF_JMP
 #undef DEF_CMD
 
+static const char* GetArgTypeName(ArgType type)
+{
+    switch(type)
+    {
+        case (ARG_NUM_TYPE ): return "  NUMBER";
+        case (ARG_REG_TYPE ): return "REGISTER";
+        case (ARG_ADDR_TYPE): return " ADDRESS";
+
+        default: "   EMPTY";
+    }
+}
+
+static const char* GetArgLocName(ArgLocation loc)
+{
+    switch(loc)
+    {
+        case (ARG_STACK_LOC ): return "   STACK";
+        case (ARG_MEM_LOC   ): return "  MEMORY";
+        case (ARG_REG_LOC   ): return "REGISTER";
+        case (ARG_NO_LOC    ): return "  NO LOC";
+
+        default: "   EMPTY";
+    }
+}
+
+#define DEF_REG( name, num )              \
+    case REG_##name: return "   " #name;
+
+static const char* GetRegName(RegistersInfo value)
+{
+    switch(value)
+    {
+        #include "../Processor/Include/Reg.h"
+
+        default: return "  NONE";
+    }
+}
+
+#undef DEF_REG
+
+static void PrintCommandArgValue(Argument arg)
+{
+    switch(arg.type)
+    {
+        case ARG_NUM_TYPE:
+            printf(KGRN "%6d" KNRM, arg.value); break;
+
+        case ARG_REG_TYPE:
+            printf(KGRN "%s" KNRM, GetRegName((RegistersInfo) arg.value)); break;
+
+        case ARG_ADDR_TYPE:
+            printf(KGRN "%6X" KNRM, arg.value); break;
+
+        default:
+            printf("");
+    }
+}
+
+static void CommandArgsDump(Command command)
+{
+    printf("n_args = " KRED "%d" KNRM ", loc = " KYEL "%s" KNRM ", args = {", command.n_args, GetArgLocName(command.loc));
+
+    for (size_t arg_index = 0; arg_index < command.n_args; arg_index++)
+    {
+        printf("(" KMAG "%s" KNRM ": ", GetArgTypeName(command.args[arg_index].type));
+        PrintCommandArgValue(command.args[arg_index]);
+        printf("), ");
+    }
+
+    if (command.n_args > 0) printf("\b\b");
+}
+
 void CommandDump(Command command)
 {
-    printf(KYEL "%15s" KNRM ": pc = " KBLU "%5u" KNRM ", cmd_code = " KCYN "%3u" KNRM ", n_args = " KRED "%d" KNRM ", args = {", TranslateCmdCodeToCmdName((CommandCode) command.cmd_code), command.pc, command.cmd_code, command.n_args);
-    for (size_t arg_index = 0; arg_index < command.n_args; arg_index++) printf(KGRN "%d" KNRM ", ", command.args[arg_index]);
-    if (command.n_args > 0) printf("\b\b");
+    printf(KYEL "%15s" KNRM ": pc = " KBLU "%5u" KNRM ", cmd_code = " KCYN "%2u" KNRM ", ", TranslateCmdCodeToCmdName((CommandCode) command.cmd_code), command.pc, command.cmd_code);
+    CommandArgsDump(command);
     printf("}\n");
 }
 
 #define DEF_CMD(name, num, arg, ...)
-#define DEF_JMP(name, num, condition, ...)          \
-    if (cmd_num_code == num) {command->n_args++;}
-#define DEF_DUMP(name, num)                         \
-    if (cmd_num_code == num) {command->n_args+=2;}
+#define DEF_JMP(name, num, condition, ...)                                                                                          \
+{                                                                                                                                   \
+    if (cmd_num_code == num)                                                                                                        \
+    {                                                                                                                               \
+        command->args[0] = {*(int*)(cmd_code + sizeof(BYTE)), ARG_ADDR_TYPE};                                                       \
+        command->loc = ARG_NO_LOC;                                                                                                  \
+        command->n_args++;                                                                                                          \
+    }                                                                                                                               \
+}
+
+#define DEF_DUMP(name, num)                                                                                                         \
+{                                                                                                                                   \
+    if (cmd_num_code == num)                                                                                                        \
+    {                                                                                                                               \
+        command->n_args += 2;                                                                                                       \
+        command->args[0] = {*(int*)(cmd_code + sizeof(BYTE) + 0*sizeof(int)), ARG_NUM_TYPE};                                        \
+        command->args[1] = {*(int*)(cmd_code + sizeof(BYTE) + 1*sizeof(int)), ARG_NUM_TYPE};                                        \
+    }                                                                                                                               \
+}
 
 int PatchCommand(Command* command, const BYTE* bin_code, size_t pc)
 {
@@ -196,18 +298,25 @@ int PatchCommand(Command* command, const BYTE* bin_code, size_t pc)
 
     if (*cmd_code & ARG_IMMED)
     {
-        command->args[0] = *(int*)(cmd_code + sizeof(BYTE));
+        command->args[0] = {*(int*)(cmd_code + sizeof(BYTE)), ARG_NUM_TYPE};
         command->n_args++;
     }
 
     if (*cmd_code & ARG_REG)
     {
-        command->args[command->n_args] = *(int*)(cmd_code + sizeof(BYTE) + (command->n_args)*sizeof(int));
+        command->args[command->n_args] = {*(int*)(cmd_code + sizeof(BYTE) + (command->n_args)*sizeof(int)), ARG_REG_TYPE};
         command->n_args++;
+        command->loc = ARG_REG_LOC;
     }
 
-    // if (*cmd_code & ARG_MEM)
-    //     commands[pc].n_args++;
+    if (*cmd_code & ARG_MEM)
+        command->loc = ARG_MEM_LOC;
+
+    if (cmd_num_code == CMD_PUSH)
+        command->loc = ARG_STACK_LOC;
+
+    if (command->n_args == 0)
+        command->loc = ARG_NO_LOC;
 
     #include "../Processor/Include/Cmd.h"
 

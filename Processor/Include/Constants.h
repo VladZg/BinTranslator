@@ -41,7 +41,7 @@ enum ErrCodes
 };
 
 #define DEF_REG( name, num )              \
-      REG_##name = num,                   \
+      REG_##name = num,
 
 enum RegistersInfo
 {

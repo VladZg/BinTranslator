@@ -1,45 +1,45 @@
 PUSH 5 
-POP rdx 
+POP RDX 
 CALL 181 
 HLT 
 PUSH 0 
 PUSH 0 
 PUSH 0 
-POP rax 
-POP rbx 
-POP rcx 
+POP RAX 
+POP RBX 
+POP RCX 
 RET 
-POP rax 
+POP RAX 
 PUSH 0 
-POP [rax]
+POP [RAX]
 RET 
-PUSH 1 + rbx 
-POP rbx 
+PUSH 1 + RBX 
+POP RBX 
 PUSH -30 
-PUSH rcx 
+PUSH RCX 
 ADD 
-POP rcx 
-PUSH rcx 
+POP RCX 
+PUSH RCX 
 COS 
-PUSH rdx 
+PUSH RDX 
 MUL 
 PUSH 2 
 MUL 
 PUSH 41 
 ADD 
-PUSH rcx 
+PUSH RCX 
 SIN 
-PUSH rdx 
+PUSH RDX 
 MUL 
 PUSH 11 
 ADD 
-POP rfx 
-PUSH -1 + rfx 
+POP RFX 
+PUSH -1 + RFX 
 PUSH 81 
 MUL 
 ADD 
 CALL 47 
-PUSH 1 + rbx 
+PUSH 1 + RBX 
 PUSH -48 
 JBE 63 
 RET 

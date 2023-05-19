@@ -7,20 +7,34 @@
 #include "../Processor/Include/TechInfo.h"
 #include "./Defines.h"
 
+enum ArgType
+{
+    ARG_NUM_TYPE     ,
+    ARG_REG_TYPE     ,
+    ARG_ADDR_TYPE    ,
+};
+
 enum ArgLocation
 {
+    ARG_NO_LOC      ,
     ARG_STACK_LOC   ,
-    ARG_REG_LOC     ,
     ARG_MEM_LOC     ,
+    ARG_REG_LOC     ,
+};
+
+struct Argument
+{
+    int         value;
+    ArgType     type ;
 };
 
 struct Command
 {
-    size_t      pc      ;
-    int         cmd_code;
-    size_t      n_args  ;
-    int         args[2]  ;
-    ArgLocation arg_loc ;
+    size_t       pc      ;
+    int          cmd_code;
+    size_t       n_args  ;
+    Argument     args[2] ;
+    ArgLocation  loc     ;
 };
 
 struct IR

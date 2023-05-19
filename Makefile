@@ -6,7 +6,7 @@ SOURCE = ./app.cpp ./Source/Translator.cpp ./Source/IR.cpp
 
 filename = test
 
-all: recompile_processor compile_app run_app
+all: recompile_processor compile_app run_asm_compilation run_app
 
 compile_app:
 	@g++ $(SOURCE) $(CFLAGS) -o $(TARGET)
