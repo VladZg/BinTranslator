@@ -1,0 +1,24 @@
+; [0] PUSH
+    push RSI
+
+; [1] PUSH
+    push 23 
+
+; [2] PUSH
+    push RAX
+
+; [3] ADD
+    pop rsi     
+    pop rdi     
+    add rsi, rdi
+    push rsi    
+
+; [4] POP
+    pop  RSI
+
+; [5] POP
+    pop  RSI
+
+; [6] HLT
+    ret
+

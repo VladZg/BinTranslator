@@ -47,7 +47,7 @@ enum RegistersInfo
 {
       #include "./Reg.h"
 
-      REGS_SIZE = 8,
+      REGS_SIZE = 15,
 };
 
 #undef DEF_REG

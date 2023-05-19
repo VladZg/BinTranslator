@@ -14,11 +14,11 @@ all: asm disasm
 asm:
 	@$(ROOT_DIR)$(APP_DIR)$(ASM) $(filename)
 
-disasm :
+disasm:
 	@$(ROOT_DIR)$(APP_DIR)$(DISASM) $(ASM_TARGET)
 
-run :
+run:
 	@$(ROOT_DIR)$(APP_DIR)$(CPU) $(ASM_TARGET)
 
-clean :
+clean:
 	@rm -f $(ROOT_DIR)$(ASM_TARGET) $(ROOT_DIR)$(DISASM_TARGET) $(ROOT_DIR)Asm_listing.lst

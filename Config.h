@@ -2,5 +2,7 @@
 #define BIN_TRANSLATOR_CONFIG_H
 
 #define NLOGGING
+#define NOPPING
+// #define N_TEXT_TRANSLATION_MODE
 
 #endif

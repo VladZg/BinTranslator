@@ -75,20 +75,20 @@ int IRCtor(IR* ir, FILE* bin_file, CtorDumpMode mode)
     ir->commands = (Command*) calloc(ir->info.code_size, sizeof(Command));
     ASSERT(ir->commands != nullptr);
 
-    if (mode == CTOR_DUMP_MODE) IRDump(*ir);
+    if (mode == CTOR_DUMP_MODE) IRDump(ir);
 
     return 1;
 }
 
-IRStatusCode IRVerify(IR ir)
+IRStatusCode IRVerify(const IR* ir)
 {
-    if (ir.commands = nullptr)
+    if (ir->commands == nullptr)
         FUNC_NAME(printf("Commands pointer is nullptr\n");)
 
-    else if (ir.bin_code = nullptr)
+    else if (ir->bin_code == nullptr)
         FUNC_NAME(printf("Bin code pointer is nullptr\n");)
 
-    else if (!VerifyTechInfo(ir.info))
+    else if (!VerifyTechInfo(ir->info))
         FUNC_NAME(printf("Technical info is wrong\n");)
 
     else return IR_OK_STATUS;
@@ -100,7 +100,7 @@ int IRDtor(IR* ir)
 {
     if (ir == nullptr) return 1;
 
-    IRVerify(*ir);
+    IRVerify(ir);
 
     TechInfoDtor(&ir->info);
     ir->n_cmds = 0;
@@ -115,39 +115,47 @@ int IRDtor(IR* ir)
     return 1;
 }
 
-void BinCodeDump(const BYTE* bin_code, size_t n_bytes, const char* tabulation)
+void BinCodeDump(const BYTE* bin_code, size_t n_bytes, const char* tabulation, HighlightDumpMode mode, size_t highlighted_index, BYTE highlighted_symbol)
 {
     size_t str_len = 32;
 
     for (size_t byte_index = 0; byte_index < n_bytes; byte_index++)
     {
         printf("%s", byte_index % str_len == 0 ? tabulation : "");
+
+        if (mode == LIGHT_DUMP_MODE)
+        {
+            if (bin_code[byte_index] == highlighted_symbol) printf(KGRN);
+            if (byte_index == highlighted_index) printf(KYEL);
+        }
+
         printf("%02X %s", bin_code[byte_index], (byte_index + 1) % str_len == 0 ? "\n" : "");
+        printf(KNRM);
     }
 }
 
-void IRDump(IR ir)
+void IRDump(const IR* ir)
 {
     VERIFY_IR(ir)
 
     FUNC_NAME(
-    printf("    info     = {                               \n"                   );
-    printf("                code_size = " KYEL "%d" KNRM " \n", ir.info.code_size);
-    printf("                filecode  = " KYEL "%d" KNRM " \n", ir.info.filecode );
-    printf("                version   = " KYEL "%d" KNRM " \n", ir.info.version  );
-    printf("               }                               \n"                   );
-    printf("    n_cmds   = " KYEL "%u" KNRM "              \n", ir.n_cmds        );
-    printf("    commands = {                               \n"                   );
+    printf("    info     = {                               \n"                    );
+    printf("                code_size = " KYEL "%d" KNRM " \n", ir->info.code_size);
+    printf("                filecode  = " KYEL "%d" KNRM " \n", ir->info.filecode );
+    printf("                version   = " KYEL "%d" KNRM " \n", ir->info.version  );
+    printf("               }                               \n"                    );
+    printf("    n_cmds   = " KYEL "%u" KNRM "              \n", ir->n_cmds        );
+    printf("    commands = {                               \n"                    );
 
-    for (size_t cmd_index = 0; cmd_index < ir.n_cmds; cmd_index++)
+    for (size_t cmd_index = 0; cmd_index < ir->n_cmds; cmd_index++)
     {
         printf("                [" KMAG "%4u" KNRM "]", cmd_index);
-        CommandDump(ir.commands[cmd_index]);
+        CommandDump(ir->commands[cmd_index]);
     }
 
     printf("               }               \n"                   );
     printf("    bin_code = {               \n"                   );
-    BinCodeDump(ir.bin_code, ir.info.code_size, "                ");
+    BinCodeDump(ir->bin_code, ir->info.code_size, "                ", NLIGHT_DUMP_MODE);
     printf("                               \n");
     printf("               }               \n"                   );
     )
@@ -324,8 +332,7 @@ int PatchCommand(Command* command, const BYTE* bin_code, size_t pc)
 
 int PatchIR(IR* ir)
 {
-    ASSERT(ir != nullptr);
-    VERIFY_IR(*ir)
+    VERIFY_IR(ir)
 
     size_t pc = 0;
     size_t cmd_index = 0;

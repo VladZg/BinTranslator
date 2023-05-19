@@ -14,17 +14,25 @@
 const char  FILENAME_INPUT_DEFAULT[]  = "./Source.exe";
 const char* FILENAME_INPUT            = nullptr;
 
+#define MAX(a, b) ((a) >= (b) ? a : b)
+
+#ifndef N_TEXT_TRANSLATION_MODE
+    FILE* text_translation_file = fopen("./text_translation.txt", "w");
+    void exit_functuion() {fclose(text_translation_file);}
+    int exit_status = atexit(exit_functuion);
+#endif
+
 int Execute_x86Code(const x86Buf* x86_buf)
 {
     ASSERT(x86_buf != nullptr);
 
-    int mprotect_res = mprotect(x86_buf->buf, x86_buf->size, PROT_EXEC);
+    int mprotect_res = mprotect(x86_buf->buf, x86_buf->prog_size, PROT_EXEC);
     ASSERT(mprotect_res == 0);
 
     void (*exec_code)() = (void (*)())(x86_buf->buf);
     exec_code();
 
-    mprotect_res = mprotect(x86_buf->buf, x86_buf->size, PROT_READ | PROT_WRITE);
+    mprotect_res = mprotect(x86_buf->buf, x86_buf->buf_size, PROT_READ | PROT_WRITE);
     ASSERT(mprotect_res == 0);
 
     return 1;
@@ -39,17 +47,17 @@ int main(const int argc, const char** argv)
     ASSERT(bin_file != nullptr);
 
     IR ir = {};
-    IRCtor(&ir, bin_file, CTOR_NDUMP_MODE);
+    IRCtor(&ir, bin_file);
     fclose(bin_file);
 
     PatchIR(&ir);
-    IRDump(ir);
+    IRDump(&ir);
 
     x86Buf x86_buf = {};
     x86BufCtor(&x86_buf);
 
     IRTranslate_x86(&ir, &x86_buf);
-    x86BufDump(x86_buf);
+    x86BufDump(&x86_buf, MAX(256, x86_buf.prog_size));
 
     Execute_x86Code(&x86_buf);
 
@@ -58,6 +66,4 @@ int main(const int argc, const char** argv)
 
     return 1;
 }
-
-// https://www.cyberforum.ru/win-api/thread1720745.html
 

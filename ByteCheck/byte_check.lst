@@ -1,0 +1,35 @@
+     1                                  section .text
+     2                                  global main
+     3                                  
+     4                                  main:
+     5 00000000 56                          push rsi
+     6 00000001 57                          push rdi
+     7                                  
+     8 00000002 6A0D                        push 13
+     9 00000004 50                          push rax
+    10 00000005 5E                          pop rsi
+    11 00000006 5F                          pop rdi
+    12 00000007 4829FE                      sub rsi, rdi
+    13 0000000A 56                          push rsi
+    14 0000000B 5F                          pop rdi
+    15                                  
+    16 0000000C 5F                          pop rdi
+    17 0000000D 5E                          pop rsi
+    18                                  
+    19 0000000E B801000000                  mov rax, 0x01
+    20 00000013 BF01000000                  mov rdi, 1
+    21 00000018 48BE-                       mov rsi, Msg
+    21 0000001A [0000000000000000] 
+    22 00000022 BA14000000                  mov rdx, MsgLen
+    23 00000027 0F05                        syscall
+    24                                  
+    25 00000029 B83C000000                  mov rax, 0x3C
+    26 0000002E 4831FF                      xor rdi, rdi
+    27 00000031 0F05                        syscall
+    28                                  
+    29                                  section .data
+    30                                  
+    31 00000000 50726F6772616D6D20-     Msg:    db  "Programm for check!", 0x0A
+    31 00000009 666F7220636865636B-
+    31 00000012 210A               
+    32                                  MsgLen: equ $ - Msg
