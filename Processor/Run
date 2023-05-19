@@ -9,7 +9,7 @@ APP_DIR = App/
 ASM_TARGET = Source.exe
 DISASM_TARGET = Source.dsm
 
-all: asm disasm run
+all: asm disasm
 
 asm:
 	@$(ROOT_DIR)$(APP_DIR)$(ASM) $(filename)

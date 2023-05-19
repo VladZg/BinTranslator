@@ -7,6 +7,14 @@
 #include "../Processor/Include/TechInfo.h"
 #include "./Defines.h"
 
+#ifndef NDEBUG
+    #define VERIFY_TECH_INFO(tech_info) {VerifyTechInfo(tech_info);}
+    #define VERIFY_IR(       ir       ) {IRVerify(ir);             }
+#else
+    #define VERIFY_TECH_INFO(tech_info) {}
+    #define VERIFY_IR(       ir       ) {}
+#endif
+
 enum ArgType
 {
     ARG_NUM_TYPE     ,
@@ -67,7 +75,9 @@ IRStatusCode IRVerify(IR ir);
 int IRDtor(IR* ir);
 void IRDump(IR ir);
 
+void BinCodeDump(const BYTE* bin_code, size_t n_bytes, const char* tabulation);
 void CommandDump(Command command);
+
 int PatchCommand(Command* command, const BYTE* bin_code, size_t pc);
 int PatchIR(IR* ir);
 

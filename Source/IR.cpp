@@ -8,14 +8,6 @@
 #include "../Processor/Include/TechInfo.h"
 #include "../Include/IR.h"
 
-#ifndef NDEBUG
-    #define VERIFY_TECH_INFO(tech_info) {VerifyTechInfo(tech_info);}
-    #define VERIFY_IR(       ir       ) {IRVerify(ir);             }
-#else
-    #define VERIFY_TECH_INFO(tech_info) {}
-    #define VERIFY_IR(       ir       ) {}
-#endif
-
 int TechInfoCtor(TechInfo* tech_info, FILE* bin_file, CtorDumpMode mode)
 {
     ASSERT(tech_info != nullptr);
@@ -123,7 +115,7 @@ int IRDtor(IR* ir)
     return 1;
 }
 
-static void BinCodeDump(const BYTE* bin_code, size_t n_bytes, const char* tabulation)
+void BinCodeDump(const BYTE* bin_code, size_t n_bytes, const char* tabulation)
 {
     size_t str_len = 32;
 
@@ -132,8 +124,6 @@ static void BinCodeDump(const BYTE* bin_code, size_t n_bytes, const char* tabula
         printf("%s", byte_index % str_len == 0 ? tabulation : "");
         printf("%02X %s", bin_code[byte_index], (byte_index + 1) % str_len == 0 ? "\n" : "");
     }
-
-    printf("\n");
 }
 
 void IRDump(IR ir)
@@ -158,6 +148,7 @@ void IRDump(IR ir)
     printf("               }               \n"                   );
     printf("    bin_code = {               \n"                   );
     BinCodeDump(ir.bin_code, ir.info.code_size, "                ");
+    printf("                               \n");
     printf("               }               \n"                   );
     )
 }

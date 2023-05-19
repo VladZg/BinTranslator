@@ -11,11 +11,11 @@
 typedef unsigned char BYTE;
 typedef long unsigned int ADDRESS;
 
-#define FUNC_NAME(cmd)                      \
-{                                           \
+#define FUNC_NAME(cmd)                                   \
+{                                                        \
     printf(KCYN "%s" KNRM ":\n", __PRETTY_FUNCTION__);   \
-    cmd                                     \
-    printf("\n");                           \
+    cmd                                                  \
+    printf("\n");                                        \
 }
 
 #endif
