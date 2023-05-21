@@ -5,7 +5,7 @@
 #include "./Defines.h"
 #include "./IR.h"
 
-#define MAX_PROGRAMM_SIZE 33554432
+#define MAX_PROGRAMM_SIZE 409600
 
 struct x86Buf
 {
@@ -24,6 +24,8 @@ int x86BufDtor(x86Buf* x86_buf);
 int x86BufVerify(const x86Buf* x86_buf);
 int IRTranslate_x86(const IR* ir, x86Buf* x86_buf);
 int x86BufDump(const x86Buf* x86_buf, size_t n_bytes);
+
+int PatchAddresses(const IR* ir, x86Buf* x86_buf, size_t* offsets);
 
 #ifndef NDEBUG
     #define VERIFY_x86BUF(x86_buf_ptr) {ASSERT(x86_buf_ptr != nullptr); x86BufVerify(x86_buf_ptr);}

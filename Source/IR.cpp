@@ -312,7 +312,10 @@ int PatchCommand(Command* command, const BYTE* bin_code, size_t pc)
         command->loc = ARG_MEM_LOC;
 
     if (cmd_num_code == CMD_PUSH)
-        command->loc = ARG_STACK_LOC;
+    {
+        if (*cmd_code & ARG_MEM) command->loc = ARG_MEM_LOC  ;
+        else                     command->loc = ARG_STACK_LOC;
+    }
 
     if (command->n_args == 0)
         command->loc = ARG_NO_LOC;

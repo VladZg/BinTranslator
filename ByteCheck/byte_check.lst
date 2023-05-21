@@ -2,34 +2,33 @@
      2                                  global main
      3                                  
      4                                  main:
-     5 00000000 56                          push rsi
-     6 00000001 57                          push rdi
+     5 00000000 55                          push rbp
+     6 00000001 4889E5                      mov rbp, rsp
      7                                  
-     8 00000002 6A0D                        push 13
-     9 00000004 50                          push rax
-    10 00000005 5E                          pop rsi
-    11 00000006 5F                          pop rdi
-    12 00000007 4829FE                      sub rsi, rdi
-    13 0000000A 56                          push rsi
-    14 0000000B 5F                          pop rdi
+     8 00000004 4539F5                      cmp r13d, r14d
+     9 00000007 0F8F(DA040000)              jg  1242
+    10 0000000D 0F8D(DA040000)              jge 1242
+    11 00000013 0F8C(DA040000)              jl  1242
+    12 00000019 0F8E(DA040000)              jle 1242
+    13 0000001F 0F84(DA040000)              je  1242
+    14 00000025 0F85(DA040000)              jne 1242
     15                                  
-    16 0000000C 5F                          pop rdi
-    17 0000000D 5E                          pop rsi
-    18                                  
-    19 0000000E B801000000                  mov rax, 0x01
-    20 00000013 BF01000000                  mov rdi, 1
-    21 00000018 48BE-                       mov rsi, Msg
-    21 0000001A [0000000000000000] 
-    22 00000022 BA14000000                  mov rdx, MsgLen
-    23 00000027 0F05                        syscall
-    24                                  
-    25 00000029 B83C000000                  mov rax, 0x3C
-    26 0000002E 4831FF                      xor rdi, rdi
-    27 00000031 0F05                        syscall
-    28                                  
-    29                                  section .data
-    30                                  
-    31 00000000 50726F6772616D6D20-     Msg:    db  "Programm for check!", 0x0A
-    31 00000009 666F7220636865636B-
-    31 00000012 210A               
-    32                                  MsgLen: equ $ - Msg
+    16 0000002B B801000000                  mov rax, 0x01
+    17 00000030 BF01000000                  mov rdi, 1
+    18 00000035 48BE-                       mov rsi, Msg
+    18 00000037 [0000000000000000] 
+    19 0000003F BA14000000                  mov rdx, MsgLen
+    20 00000044 0F05                        syscall
+    21                                  
+    22 00000046 5D                          pop rbp
+    23                                  
+    24 00000047 B83C000000                  mov rax, 0x3C
+    25 0000004C 4831FF                      xor rdi, rdi
+    26 0000004F 0F05                        syscall
+    27                                  
+    28                                  section .data
+    29                                  
+    30 00000000 50726F6772616D6D20-     Msg:    db  "Programm for check!", 0x0A
+    30 00000009 666F7220636865636B-
+    30 00000012 210A               
+    31                                  MsgLen: equ $ - Msg

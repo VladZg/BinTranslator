@@ -16,12 +16,6 @@ const char* FILENAME_INPUT            = nullptr;
 
 #define MAX(a, b) ((a) >= (b) ? a : b)
 
-#ifndef N_TEXT_TRANSLATION_MODE
-    FILE* text_translation_file = fopen("./text_translation.txt", "w");
-    void exit_functuion() {fclose(text_translation_file);}
-    int exit_status = atexit(exit_functuion);
-#endif
-
 int Execute_x86Code(const x86Buf* x86_buf)
 {
     ASSERT(x86_buf != nullptr);

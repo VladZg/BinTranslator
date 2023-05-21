@@ -1,19 +1,43 @@
 [ assembly command ]          [ ip ] [cmd ] [  arg1  ] [  arg2  ]
-            push rsi          [0000] [0065] [00000005] 
-             push 23          [0005] [0033] [00000017] 
-            push rax          [0010] [0065] [00000001] 
-                 add          [0015] [0002] 
-             pop rsi          [0016] [0073] [00000005] 
-             pop rsi          [0021] [0073] [00000005] 
-                 hlt          [0026] [0000] 
+               main:          
+                  in          [0000] [0008] 
+             pop rbx          [0001] [0073] [00000002] 
+              push 1          [0006] [0033] [00000001] 
+             pop rax          [0011] [0073] [00000001] 
+      call factorial          [0016] [0021] [0000001c] 
+            push rax          [0021] [0065] [00000001] 
+                 out          [0026] [0006] 
+                 hlt          [0027] [0000] 
+          factorial:          
+            push rbx          [0028] [0065] [00000002] 
+              push 1          [0033] [0033] [00000001] 
+     jae correct_num          [0038] [0014] [0000003a] 
+              push 0          [0043] [0033] [00000000] 
+             pop rax          [0048] [0073] [00000001] 
+    jmp exit_factorial          [0053] [0010] [00000071] 
+        correct_num:          
+            push rbx          [0058] [0065] [00000002] 
+              push 1          [0063] [0033] [00000001] 
+    jne continue_factorial          [0068] [0016] [0000004e] 
+    jmp exit_factorial          [0073] [0010] [00000071] 
+ continue_factorial:          
+            push rbx          [0078] [0065] [00000002] 
+            push rax          [0083] [0065] [00000001] 
+                 mul          [0088] [0004] 
+             pop rax          [0089] [0073] [00000001] 
+       push -1 + rbx          [0094] [0097] [ffffffff] [00000002] 
+             pop rbx          [0103] [0073] [00000002] 
+      call factorial          [0108] [0021] [0000001c] 
+     exit_factorial:          
+                 ret          [0113] [0022] 
 
 Named labels
 {
-    "        LABEL POISON" = 2989
-    "        LABEL POISON" = 2989
-    "        LABEL POISON" = 2989
-    "        LABEL POISON" = 2989
-    "        LABEL POISON" = 2989
+    "                main" = 0
+    "           factorial" = 28
+    "         correct_num" = 58
+    "  continue_factorial" = 78
+    "      exit_factorial" = 113
     "        LABEL POISON" = 2989
     "        LABEL POISON" = 2989
     "        LABEL POISON" = 2989

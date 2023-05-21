@@ -1,24 +1,103 @@
-; [0] PUSH
-    push RSI
+; Assembly logging of binary translation
 
-; [1] PUSH
-    push 23 
+; [0] IN
+    mov  r14, 0x564d60973640       
+    call r14           
+    push r14           
+
+; [1] POP
+    pop  RBX
 
 ; [2] PUSH
+    push 1 
+
+; [3] POP
+    pop  RAX
+
+; [4] ; CALL
+    CALL 0
+
+; [5] PUSH
     push RAX
 
-; [3] ADD
-    pop rsi     
-    pop rdi     
-    add rsi, rdi
-    push rsi    
+; [6] OUT
+    pop  r14           
+    mov  rdi, r14      
+    mov  r14, 0x564d609735f0       
+    call r14           
 
-; [4] POP
-    pop  RSI
+; [7] HLT
+    ret
 
-; [5] POP
-    pop  RSI
+; [8] PUSH
+    push RBX
 
-; [6] HLT
+; [9] PUSH
+    push 1 
+
+; [10] ; JAE
+    pop  r14       
+    pop  r13       
+    cmp  r13d, r14d
+    JAE 0
+
+; [11] PUSH
+    push 0 
+
+; [12] POP
+    pop  RAX
+
+; [13] ; JMP
+    JMP 0
+
+; [14] PUSH
+    push RBX
+
+; [15] PUSH
+    push 1 
+
+; [16] ; JNE
+    pop  r14       
+    pop  r13       
+    cmp  r13d, r14d
+    JNE 0
+
+; [17] ; JMP
+    JMP 0
+
+; [18] PUSH
+    push RBX
+
+; [19] PUSH
+    push RAX
+
+; [20] MUL
+    pop  r13     
+    pop  r14     
+    push rax     
+    mov  rax, r13
+    imul r14     
+    mov  r13, rax
+    pop  rax     
+    push r13     
+
+; [21] POP
+    pop  RAX
+
+; [22] PUSH
+    push -1 
+    push RBX
+    pop r13     
+    pop r14     
+    add r13, r14
+    push r13    
+
+; [23] POP
+    pop  RBX
+
+; [24] ; CALL
+    CALL 0
+
+; [25] HLT
     ret
 
