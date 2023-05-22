@@ -203,10 +203,50 @@
 - CALL
 - RET
 - IN
+
+```
+    push rdi
+    push rax
+    push rsi
+    mov  r14, <InCmd_address>
+    call r14
+    mov  r14, rax
+    push rsi
+    push rax
+    push rdi
+    push r14
+```
+    , где InCmd - написанная на C функция, определённая в файле выше:
+```C++
+    long int InCmd()
+    {
+        long int num = 0;
+        printf("Type a number: ");
+        scanf("%ld", &num);
+        return num;
+    }
+```
+
 - OUT
+
+```
+    pusha
+    pop  r14
+    mov  rdi, r14
+    mov  r14, %p
+    call r14
+    popa
+```
+    , где OutCmd - написанная на C функция, определённая в файле выше:
+```C++
+    void OutCmd(long int num)
+    {
+        printf("OUT: %ld\n", num);
+    }
+```
 - PRINT
 
-Оперативная память процессора выделяется в начале трансляции, на RAM выделено 800 байт памяти (100 яеек размера 8), ...
+Оперативная память процессора выделяется в начале трансляции, на RAM выделено 800 байт памяти (100 яеек размера 8).
 
 В результате итеративной обработки массива команд из IR буфер ``x86_buf`` заполняется байтами:
 

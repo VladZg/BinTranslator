@@ -572,12 +572,12 @@ static void TranslateOutCmd(x86Buf* x86_buf, const Command* cmd)
     PasteAddress((ADDRESS)OutCmd                        )
     PasteBytes  (CALL_R14, POPA                         )
 
-    TextTranslate("    pusha            \n"
-                    "    pop  r14       \n"
-                    "    mov  rdi, r14  \n"
-                    "    mov  r14, %p   \n"
-                    "    call r14       \n"
-                    "    popa           \n", OutCmd)
+    TextTranslate("    pusha          \n"
+                  "    pop  r14       \n"
+                  "    mov  rdi, r14  \n"
+                  "    mov  r14, %p   \n"
+                  "    call r14       \n"
+                  "    popa           \n", OutCmd)
 }
 
 static void TranslatePrintCmd(x86Buf* x86_buf, const Command* cmd)
