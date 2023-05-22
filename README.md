@@ -70,7 +70,7 @@
         push <reg>
     ```
 
-    PUSH [<reg>]:
+    PUSH [reg]:
     ```
         push <reg>
         pop r13
@@ -78,7 +78,7 @@
         push r14
     ```
 
-    PUSH [<num>]:
+    PUSH [num]:
     ```
         push <num>
         pop r13
@@ -86,7 +86,7 @@
         push r14
     ```
 
-    PUSH [<num>+<reg>]:
+    PUSH [num+reg]:
     ```
         push <num>
         push <reg>
@@ -99,7 +99,7 @@
 
 - POP
 
-    POP <reg>:
+    POP reg:
     ```
         pop <reg>
     ```
