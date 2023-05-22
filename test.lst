@@ -1,45 +1,58 @@
 [ assembly command ]          [ ip ] [cmd ] [  arg1  ] [  arg2  ]
                main:          
-                  in          [0000] [0008] 
-             pop rbx          [0001] [0073] [00000002] 
-              push 1          [0006] [0033] [00000001] 
-             pop rax          [0011] [0073] [00000001] 
-      call factorial          [0016] [0021] [0000001c] 
-            push rax          [0021] [0065] [00000001] 
-                 out          [0026] [0006] 
-                 hlt          [0027] [0000] 
-          factorial:          
-            push rbx          [0028] [0065] [00000002] 
-              push 1          [0033] [0033] [00000001] 
-     jae correct_num          [0038] [0014] [0000003a] 
-              push 0          [0043] [0033] [00000000] 
-             pop rax          [0048] [0073] [00000001] 
-    jmp exit_factorial          [0053] [0010] [00000071] 
-        correct_num:          
-            push rbx          [0058] [0065] [00000002] 
-              push 1          [0063] [0033] [00000001] 
-    jne continue_factorial          [0068] [0016] [0000004e] 
-    jmp exit_factorial          [0073] [0010] [00000071] 
- continue_factorial:          
-            push rbx          [0078] [0065] [00000002] 
-            push rax          [0083] [0065] [00000001] 
-                 mul          [0088] [0004] 
-             pop rax          [0089] [0073] [00000001] 
-       push -1 + rbx          [0094] [0097] [ffffffff] [00000002] 
-             pop rbx          [0103] [0073] [00000002] 
-      call factorial          [0108] [0021] [0000001c] 
-     exit_factorial:          
-                 ret          [0113] [0022] 
+              push 1          [0000] [0033] [00000001] 
+             pop rax          [0005] [0073] [00000001] 
+             push -5          [0010] [0033] [fffffffb] 
+             pop rbx          [0015] [0073] [00000002] 
+              push 6          [0020] [0033] [00000006] 
+             pop rcx          [0025] [0073] [00000003] 
+    call quadratic_solver          [0030] [0021] [0000002a] 
+            push rdx          [0035] [0065] [00000004] 
+                 out          [0040] [0006] 
+                 hlt          [0041] [0000] 
+   quadratic_solver:          
+    call calc_discreminant          [0042] [0021] [0000006e] 
+            push rdx          [0047] [0065] [00000004] 
+              push 0          [0052] [0033] [00000000] 
+    jb neg_discreminant          [0057] [0011] [00000063] 
+            push rdx          [0062] [0065] [00000004] 
+              push 0          [0067] [0033] [00000000] 
+    je null_discreminant          [0072] [0015] [00000068] 
+   pos_discreminant:          
+            push rdx          [0077] [0065] [00000004] 
+           push 1000          [0082] [0033] [000003e8] 
+                 mul          [0087] [0004] 
+               fsqrt          [0088] [0027] 
+             pop rdx          [0089] [0073] [00000004] 
+    jmp exit_quadratic_solver          [0094] [0010] [0000006d] 
+   neg_discreminant:          
+    jmp exit_quadratic_solver          [0099] [0010] [0000006d] 
+  null_discreminant:          
+    jmp exit_quadratic_solver          [0104] [0010] [0000006d] 
+exit_quadratic_solver:          
+                 ret          [0109] [0022] 
+  calc_discreminant:          
+            push rbx          [0110] [0065] [00000002] 
+            push rbx          [0115] [0065] [00000002] 
+    mul         // b^2          [0120] [0004] 
+              push 4          [0121] [0033] [00000004] 
+            push rax          [0126] [0065] [00000001] 
+                 mul          [0131] [0004] 
+            push rcx          [0132] [0065] [00000003] 
+    mul         // 4ac          [0137] [0004] 
+    sub         // b^2-4ac          [0138] [0003] 
+             pop rdx          [0139] [0073] [00000004] 
+                 ret          [0144] [0022] 
 
 Named labels
 {
     "                main" = 0
-    "           factorial" = 28
-    "         correct_num" = 58
-    "  continue_factorial" = 78
-    "      exit_factorial" = 113
-    "        LABEL POISON" = 2989
-    "        LABEL POISON" = 2989
+    "    quadratic_solver" = 42
+    "    pos_discreminant" = 77
+    "    neg_discreminant" = 99
+    "   null_discreminant" = 104
+    "exit_quadratic_solver" = 109
+    "   calc_discreminant" = 110
     "        LABEL POISON" = 2989
     "        LABEL POISON" = 2989
     "        LABEL POISON" = 2989

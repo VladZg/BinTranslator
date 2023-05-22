@@ -5,13 +5,20 @@ main:
     push rbp
     mov rbp, rsp
 
-    cmp r13d, r14d
-    jg  1242
-    jge 1242
-    jl  1242
-    jle 1242
-    je  1242
-    jne 1242
+    push 7000
+    push 1500
+    fild dword [rsp+8]
+    fild qword [rsp]
+    push dword 1000
+    fidiv dword [rsp]
+    fsqrt
+    add rsp, 12
+    fistp qword [rsp]
+
+    mov rdi, 0x4635637454352787
+
+    mov rax, r14
+    cmp r13, r14
 
     mov rax, 0x01
     mov rdi, 1

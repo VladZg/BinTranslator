@@ -1,42 +1,71 @@
 main:
 {
-    in
-    pop rbx
+    // in
     push 1
     pop rax
+    // in
+    push -5
+    pop rbx
+    // in
+    push 6
+    pop rcx
 
-    call factorial
+    call quadratic_solver
 
-    push rax
+    push rdx
     out
+
+    // print -1
+    // print 2
+
     hlt
 }
 
-factorial:
+quadratic_solver:
+{
+    call calc_discreminant
+
+    push rdx
+    push 0
+    jb neg_discreminant
+
+    push rdx
+    push 0
+    je null_discreminant
+
+pos_discreminant:
+    push rdx
+    push 1000
+    mul
+    fsqrt
+    pop rdx
+    // print 2
+    jmp exit_quadratic_solver
+
+neg_discreminant:
+    // print 0
+    jmp exit_quadratic_solver
+
+null_discreminant:
+    // print -1
+    jmp exit_quadratic_solver
+
+exit_quadratic_solver:
+    ret
+}
+
+calc_discreminant:
 {
     push rbx
-    push 1
-    jae correct_num
-    push 0
-    pop rax
-    jmp exit_factorial
-
-correct_num:
     push rbx
-    push 1
-    jne continue_factorial
-    jmp exit_factorial
-
-continue_factorial:
-    push rbx
+    mul         // b^2
+    push 4
     push rax
     mul
-    pop rax
+    push rcx
+    mul         // 4ac
+    sub         // b^2-4ac
+    pop rdx
 
-    push -1 + rbx
-    pop rbx
-    call factorial
-
-exit_factorial:
     ret
 }

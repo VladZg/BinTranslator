@@ -51,7 +51,7 @@ int main(const int argc, const char** argv)
     x86BufCtor(&x86_buf);
 
     IRTranslate_x86(&ir, &x86_buf);
-    x86BufDump(&x86_buf, MAX(256, x86_buf.prog_size));
+    x86BufDump(&x86_buf, MAX(256, x86_buf.prog_size+1));
 
     Execute_x86Code(&x86_buf);
 

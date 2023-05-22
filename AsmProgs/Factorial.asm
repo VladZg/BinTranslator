@@ -1,47 +1,50 @@
 main:
 {
-start:
     in
     pop rbx
+    push 1
+    pop rax
 
     push rbx
-    push 0
-    je finish
+    push 666
+    je exit
 
-    push 1
-    pop rcx
     call factorial
-    print rcx
-    dump full
 
-    jmp start
+    push rax
+    out
 
-finish:
-    RUS
+    jmp main
+
+exit:
     hlt
 }
 
 factorial:
 {
-    push -1 + rbx
-    push 0
-    jbe exit_factorial
-
     push rbx
-    push rcx
+    push 1
+    jae correct_num
+    push 0
+    pop rax
+    jmp exit_factorial
+
+correct_num:
+    push rbx
+    push 1
+    jne continue_factorial
+    jmp exit_factorial
+
+continue_factorial:
+    push rbx
+    push rax
     mul
-    pop rcx
+    pop rax
 
     push -1 + rbx
     pop rbx
-
     call factorial
 
 exit_factorial:
-    push rcx
-    push rbx
-    mul
-    pop rcx
-
     ret
 }

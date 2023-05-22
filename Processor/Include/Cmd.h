@@ -142,10 +142,11 @@ DEF_JMP (JF,   17, IsFridayToday())
 
 //добавленные функции (ниже)
 
-DEF_CMD (RUS, 18, 0,
+DEF_CMD(FMUL, 18, 0,
     {
-        int RUSSIA = PrintRusFlag();
-        fprintf(stderr, "  MEOW\n\n");
+        S_PUSH(S_POP * S_POP);
+
+        SimpleStackDump(&STACK);
     })
 
 DEF_CMD (PRINT, 19, 1,
@@ -166,26 +167,13 @@ DEF_CMD (PRINT, 19, 1,
         else fprintf(stderr, "\n");
     })
 
-DEF_CMD (RAM, 20, 0,
+DEF_CMD(FDIV, 20, 0,
     {
-        fprintf(stderr, "  ");
+        S_PUSH(S_POP / S_POP);
 
-        for (int j = 0; j < RAM_HEIGTH; j++)
-        {
-            for (int i = 1; i <= RAM_WIDTH; i++)
-            {
-                int num = cpu.RAM[RAM_WIDTH * j + i];
-
-                if (num == RAM_POISON) fprintf(stderr, "□");
-
-                else fprintf(stderr, KYEL "▩" KNRM);
-            }
-
-            fprintf(stderr, "\n  ");
-        }
-
-        fprintf(stderr, "\n\n");
+        SimpleStackDump(&STACK);
     })
+
 
 DEF_JMP (CALL, 21, 1,
     {
@@ -221,15 +209,11 @@ DEF_CMD (COS, 24, 0,
         SimpleStackDump(&STACK);
     })
 
-DEF_CMD(CLEAR_CONSOLE, 25, 0,
+DEF_CMD(FABS, 25, 0,
     {
-        sleep(PRINT_RAM_DELAY);
-        system("clear");
+        S_PUSH(abs(S_POP));
 
-        // for (int i = 0; i < 10000; i++)
-        // {
-        //     fprintf(stderr, "\r");
-        // }
+        SimpleStackDump(&STACK);
     })
 
 DEF_CMD(CLEAR_RAM, 26, 0,
@@ -238,7 +222,7 @@ DEF_CMD(CLEAR_RAM, 26, 0,
             cpu.RAM[i] = RAM_POISON;
     })
 
-DEF_CMD(SQRT, 27, 0,
+DEF_CMD(FSQRT, 27, 0,
     {
         S_PUSH(sqrt(S_POP));
     })
