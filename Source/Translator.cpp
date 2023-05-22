@@ -289,7 +289,7 @@ static void TranslateAddCmd(x86Buf* x86_buf, const Command* cmd)
     TextTranslate("    pop  r13     \n"
                   "    pop  r14     \n"
                   "    add  r13, r14\n"
-                  "    push r13    \n")
+                  "    push r13     \n")
 }
 
 static void TranslateSubCmd(x86Buf* x86_buf, const Command* cmd)

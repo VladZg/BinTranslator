@@ -1,6 +1,7 @@
 #ifndef BIN_TRANSLATOR_CONFIG_H
 #define BIN_TRANSLATOR_CONFIG_H
 
+#define NDEBUG
 #define NLOGGING
 #define NOPPING
 // #define N_TEXT_TRANSLATION_MODE

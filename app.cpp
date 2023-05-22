@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <sys/mman.h>
 #include <limits.h>
+#include <time.h>
 #include "./Include/Assert.h"
 #include "./Include/Defines.h"
 #include "./Processor/Include/Constants.h"
@@ -14,6 +15,15 @@
 const char  FILENAME_INPUT_DEFAULT[]  = "./Source.exe";
 const char* FILENAME_INPUT            = nullptr;
 
+#define GetTime(cmds)                                                       \
+{                                                                           \
+    clock_t timer_start = clock();                                          \
+    cmds                                                                    \
+    clock_t timer_end = clock();                                            \
+    double seconds = ((double) (timer_end - timer_start));                  \
+    printf("%lf seconds\n", seconds);                                       \
+}
+
 #define MAX(a, b) ((a) >= (b) ? a : b)
 
 int Execute_x86Code(const x86Buf* x86_buf)
@@ -24,7 +34,9 @@ int Execute_x86Code(const x86Buf* x86_buf)
     ASSERT(mprotect_res == 0);
 
     void (*exec_code)() = (void (*)())(x86_buf->buf);
-    exec_code();
+
+    for (int i = 0; i < 10000; i++)
+        exec_code();
 
     mprotect_res = mprotect(x86_buf->buf, x86_buf->buf_size, PROT_READ | PROT_WRITE);
     ASSERT(mprotect_res == 0);
@@ -53,7 +65,8 @@ int main(const int argc, const char** argv)
     IRTranslate_x86(&ir, &x86_buf);
     x86BufDump(&x86_buf, MAX(256, x86_buf.prog_size+1));
 
-    Execute_x86Code(&x86_buf);
+    GetTime(
+    Execute_x86Code(&x86_buf);)
 
     IRDtor(&ir);
     x86BufDtor(&x86_buf);
