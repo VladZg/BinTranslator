@@ -59,13 +59,13 @@
 
 - PUSH
 
-    PUSH <num>:
+    PUSH num:
     ```
         mov r14, <num>
         push r14
     ```
 
-    PUSH <reg>:
+    PUSH reg:
     ```
         push <reg>
     ```
