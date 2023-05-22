@@ -60,25 +60,34 @@
 - PUSH
 
     PUSH <num>:
+    ```
         mov r14, <num>
         push r14
+    ```
 
     PUSH <reg>:
+    ```
         push <reg>
+    ```
 
     PUSH [<reg>]:
+    ```
         push <reg>
         pop r13
         mov r14, [rbp + r13 * 8]
         push r14
+    ```
 
     PUSH [<num>]:
+    ```
         push <num>
         pop r13
         mov r14, [rbp + r13 * 8]
         push r14
+    ```
 
     PUSH [<num>+<reg>]:
+    ```
         push <num>
         push <reg>
         pop r13
@@ -86,28 +95,36 @@
         add r13, r14
         mov r14, [rbp + r13 * 8]
         push r14
+    ```
 
 - POP
 
     POP <reg>:
+    ```
         pop <reg>
+    ```
 
 - ADD
 
+    ```
     pop  r13
     pop  r14
     add  r13, r14
     push r13
+    ```
 
 - SUB
 
+    ```
     pop  r13
     pop  r14
     sub  r13, r14
     push r13
+    ```
 
 - MUL (знаковое умножение целых чисел)
 
+    ```
     pop  r13
     pop  r14
     push rax
@@ -116,9 +133,11 @@
     mov  r13, rax
     pop  rax
     push r13
+    ```
 
 - FMUL (знаковое умножение вещественных чисел)
 
+    ```
     push  1000
     fild  qword [rsp+16]
     fild  qword [rsp+8]
@@ -127,9 +146,11 @@
     fmul
     add   rsp, 16
     fistp qword [rsp]
+    ```
 
 - DIV (целочисленное деление знаковых чисел))
 
+    ```
     push  1000
     fild  qword [rsp+16]
     fild  qword [rsp+8]
@@ -138,10 +159,11 @@
     fmul
     add   rsp, 16
     fistp qword [rsp]
-
+    ```
 
 - FDIV (знаковое деление вещественных чисел)
 
+    ```
     pop  r14
     pop  r13
     push rax
@@ -152,15 +174,19 @@
     pop  rdi
     pop  rax
     push r13
+    ```
 
 - FABS (модуль числа)
 
+    ```
     fild qword [rsp]
     fabs
     fistp qword [rsp]
+    ```
 
 - FSQRT (квадратный корень)
 
+    ```
     push 1000
     fild qword [rsp]
     fild qword [rsp+8]
@@ -170,6 +196,7 @@
     fsqrt
     fmul
     fistp qword [rsp]
+    ```
 
 - JMP (безусловный переход)
 - Jxx (условный переход)
