@@ -15,20 +15,18 @@ main:
     push rdx
     out
 
-    // push r8
-    // out
-
-    // push r9
-    // out
-
-    // print -1
-    // print 2
-
     hlt
 }
 
 quadratic_solver:
 {
+    push rax
+    push 0
+    jne nlinear_solver
+    call linear_solver
+    jmp exit_quadratic_solver
+
+nlinear_solver:
     call calc_discreminant
 
     push rdx
@@ -98,5 +96,24 @@ calc_discreminant:
     sub         // b^2-4ac
     pop rdx
 
+    ret
+}
+
+linear_solver:
+{
+    push rbx
+    push 0
+    je inf_roots
+
+    push -1
+    push rcx
+    mul
+    push rbx
+    div
+
+inf_roots:
+    print -1
+
+exit_lin_solver:
     ret
 }
