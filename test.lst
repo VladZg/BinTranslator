@@ -1,58 +1,27 @@
 [ assembly command ]          [ ip ] [cmd ] [  arg1  ] [  arg2  ]
-               main:          
               push 1          [0000] [0033] [00000001] 
              pop rax          [0005] [0073] [00000001] 
-             push -5          [0010] [0033] [fffffffb] 
-             pop rbx          [0015] [0073] [00000002] 
-              push 6          [0020] [0033] [00000006] 
-             pop rcx          [0025] [0073] [00000003] 
-    call quadratic_solver          [0030] [0021] [0000002a] 
-            push rdx          [0035] [0065] [00000004] 
-                 out          [0040] [0006] 
-                 hlt          [0041] [0000] 
-   quadratic_solver:          
-    call calc_discreminant          [0042] [0021] [0000006e] 
-            push rdx          [0047] [0065] [00000004] 
-              push 0          [0052] [0033] [00000000] 
-    jb neg_discreminant          [0057] [0011] [00000063] 
-            push rdx          [0062] [0065] [00000004] 
-              push 0          [0067] [0033] [00000000] 
-    je null_discreminant          [0072] [0015] [00000068] 
-   pos_discreminant:          
-            push rdx          [0077] [0065] [00000004] 
-           push 1000          [0082] [0033] [000003e8] 
-                 mul          [0087] [0004] 
-               fsqrt          [0088] [0027] 
-             pop rdx          [0089] [0073] [00000004] 
-    jmp exit_quadratic_solver          [0094] [0010] [0000006d] 
-   neg_discreminant:          
-    jmp exit_quadratic_solver          [0099] [0010] [0000006d] 
-  null_discreminant:          
-    jmp exit_quadratic_solver          [0104] [0010] [0000006d] 
-exit_quadratic_solver:          
-                 ret          [0109] [0022] 
-  calc_discreminant:          
-            push rbx          [0110] [0065] [00000002] 
-            push rbx          [0115] [0065] [00000002] 
-    mul         // b^2          [0120] [0004] 
-              push 4          [0121] [0033] [00000004] 
-            push rax          [0126] [0065] [00000001] 
-                 mul          [0131] [0004] 
-            push rcx          [0132] [0065] [00000003] 
-    mul         // 4ac          [0137] [0004] 
-    sub         // b^2-4ac          [0138] [0003] 
-             pop rdx          [0139] [0073] [00000004] 
-                 ret          [0144] [0022] 
+          push [1+2]          [0010] [-095] [00000003] 
+                 out          [0015] [0006] 
+          push [rax]          [0016] [-063] [00000001] 
+                 out          [0021] [0006] 
+        push [1+rax]          [0022] [-031] [00000001] [00000001] 
+                 out          [0031] [0006] 
+            push [7]          [0032] [-095] [00000007] 
+                 out          [0037] [0006] 
+             pop [2]          [0038] [-087] [00000002] 
+         pop [1+rax]          [0043] [-023] [00000001] [00000001] 
+                 hlt          [0052] [0000] 
 
 Named labels
 {
-    "                main" = 0
-    "    quadratic_solver" = 42
-    "    pos_discreminant" = 77
-    "    neg_discreminant" = 99
-    "   null_discreminant" = 104
-    "exit_quadratic_solver" = 109
-    "   calc_discreminant" = 110
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
+    "        LABEL POISON" = 2989
     "        LABEL POISON" = 2989
     "        LABEL POISON" = 2989
     "        LABEL POISON" = 2989

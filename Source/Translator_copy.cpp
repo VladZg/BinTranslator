@@ -10,6 +10,7 @@
 
 #define BUF         (x86_buf->buf         )
 #define BUF_ADDRESS ((ADDRESS)x86_buf->buf)
+#define RAM_ADDRESS (x86_buf->RAM_addr    )
 #define INDEX       (x86_buf->index       )
 #define BUF_SIZE    (x86_buf->buf_size    )
 #define PROG_SIZE   (x86_buf->prog_size   )
@@ -95,22 +96,28 @@ int x86BufDump(const x86Buf* x86_buf, size_t n_bytes)
     VERIFY_x86BUF(x86_buf)
 
     FUNC_NAME(
-    printf("    buf_size                 = " KGRN "%u" KNRM "\n", BUF_SIZE     );
-    printf("    prog_size                = " KRED "%u" KNRM "\n", PROG_SIZE    );
+    printf("    buffer size              = " KGRN "%u" KNRM "\n", BUF_SIZE     );
+    printf("    programm size            = " KRED "%u" KNRM "\n", PROG_SIZE    );
     printf("    index                    = " KYEL "%u" KNRM "\n", INDEX        );
-    printf("    address                  = %016p             \n", BUF_ADDRESS);
-    printf("    buf (first %6u bytes) = {                \n"    , n_bytes      );
+    printf("    buffer address           = %016p             \n", BUF_ADDRESS  );
+    printf("    RAM address              = %016p             \n", RAM_ADDRESS  );
+    printf("    buf (first %6u bytes) = {                    \n", n_bytes      );
     BinCodeDump(BUF, n_bytes, "                                ", LIGHT_DUMP_MODE, INDEX, NOP); //x86_buf.size
-    printf("                               } \n"                               );)
+    printf("                               }                 \n"               );)
 
     return 1;
 }
 
 #ifndef N_TEXT_TRANSLATION_MODE
+
     FILE* text_translation_file = fopen("./Debug/text_translation.txt", "w");
 
     #define TextTranslate(...)                              \
         fprintf(text_translation_file, __VA_ARGS__);
+
+    void exit_function() {fclose(text_translation_file);}
+    int exit_status = atexit(exit_function);
+
 #else
     #define TextTranslate(...)
 #endif
@@ -144,30 +151,14 @@ int x86BufDump(const x86Buf* x86_buf, size_t n_bytes)
     memcpy(BUF + INDEX, addr_arr, sizeof(ADDRESS));         \
     INDEX+=sizeof(ADDRESS); PROG_SIZE+=sizeof(ADDRESS);     \
 }
+    // printf("\n\naddress: %016X\n\n", *addr_arr);            \
+
 
 #ifdef NOPPING
     #define PasteNOP PasteByte(NOP)
 #else
     #define PasteNOP
 #endif
-
-long int InCmd()
-{
-    long int num = 0;
-    printf("Type a number: ");
-    scanf("%ld", &num);
-    return num;
-}
-
-void OutCmd(long int num)
-{
-    printf("OUT: %ld\n", num);
-}
-
-void PrintCmd(long int num)
-{
-    printf("ARGUMENT: %ld\n", num);
-}
 
 static void TranslatePushCmd(x86Buf* x86_buf, const Command* cmd)
 {
@@ -183,8 +174,8 @@ static void TranslatePushCmd(x86Buf* x86_buf, const Command* cmd)
             PasteLongInt(cmd->args[arg_j].value)
             PasteBytes(PUSH_R14)                                 // push r14
 
-            TextTranslate("    mov   r14, 0x%016X \n"
-                          "    push  r14          \n", cmd->args[arg_j].value)
+            TextTranslate("    mov   r14, %016X \n"
+                          "    push  r14        \n", cmd->args[arg_j].value)
         }
 
         else if (cmd->args[arg_j].type == ARG_REG_TYPE)
@@ -221,16 +212,20 @@ static void TranslatePushCmd(x86Buf* x86_buf, const Command* cmd)
 
     if (cmd->loc == ARG_MEM_LOC)
     {
-        //                         MOV_R14                )
-        //         PasteAddress(   RAM_ADDRESS            )
 
-        PasteBytes( POP_R13                     ,
-                    0x4E, 0x8B, 0x74, 0xED, 0x00,   // mov  r14, [rbp + r13 * 8]
-                    PUSH_R14                     )
-
-        TextTranslate("    pop  r13                 \n"
-                      "    mov  r14, [rbp + r13 * 8]\n"
-                      "    push r14                 \n")
+//         PasteBytes(     POP_R13,
+//                         MOV_R14                )
+//         PasteAddress(   RAM_ADDRESS            )
+//         PasteBytes(     // 0x4F, 0x8D, 0x34, 0xEE,
+//                         // 0x4D, 0x8B, 0x2E,
+//                         0x4F, 0x8B, 0x2C, 0xEE,
+//                         PUSH_R13               )
+//
+//         TextTranslate("    pop  r13                         \n"
+//                       "    mov  r14, %16X                   \n"
+//                     //   "    lea  r14, [r14 + r13 * 8]        \n"
+//                       "    mov  r13, [r14 + r13 * 8]        \n"
+//                       "    push r13                         \n", RAM_ADDRESS)
     }
 }
 
@@ -256,22 +251,6 @@ static void TranslatePopCmd(x86Buf* x86_buf, const Command* cmd)
         }
 
         #undef DEF_REG
-    }
-
-    else if (cmd->loc == ARG_MEM_LOC)
-    {
-        for (size_t arg_j = 0; arg_j < cmd->n_args; arg_j++)
-        {
-            if (cmd->args[arg_j].type == ARG_NUM_TYPE)
-            {
-
-            }
-
-            else if (cmd->args[arg_j].type == ARG_REG_TYPE)
-            {
-
-            }
-        }
     }
 }
 
@@ -359,6 +338,8 @@ static void TranslateMulCmd(x86Buf* x86_buf, const Command* cmd)
                       "    fmul                \n"
                       "    add   rsp, 16       \n"
                       "    fistp qword [rsp]   \n")
+
+
     }
 }
 
@@ -428,49 +409,6 @@ static void TranslateDivCmd(x86Buf* x86_buf, const Command* cmd)
     }
 }
 
-static void TranslateFabsCmd(x86Buf* x86_buf, const Command* cmd)
-{
-    ASSERT(cmd != nullptr);
-    ASSERT(cmd->cmd_code == CMD_FABS);
-    VERIFY_x86BUF(x86_buf);
-
-    PasteBytes( FILD_QWORD_RSP,	    // fild qword [rsp]
-                FABS,               // fabs
-                FISTP_QWORD_RSP)    // fistp qword [rsp]
-
-    TextTranslate("    fild qword [rsp] \n"
-                  "    fabs             \n"
-                  "    fistp qword [rsp]\n")
-}
-
-static void TranslateFsqrtCmd(x86Buf* x86_buf, const Command* cmd)
-{
-    ASSERT(cmd != nullptr);
-    ASSERT(cmd->cmd_code == CMD_FABS);
-    VERIFY_x86BUF(x86_buf);
-
-    PasteByte ( PUSH_X                 )
-    PasteInt  ( 1000                   )        // push qword 1000
-    PasteBytes( FILD_QWORD_RSP  ,               // fild qword [rsp]
-                FILD_QWORD_RSP_x, 0x08,         // fild qword [rsp+8]
-                FILD_QWORD_RSP  ,               // fild qword [rsp]
-                ADD_RSP_x       , 0x08,         // add rsp, 8
-                FDIV ,                          // fdiv
-                FSQRT,                          // fsqrt
-                FMUL ,                          // fmul
-                FISTP_QWORD_RSP        )        // fistp qword [rsp]
-
-    TextTranslate("    push 1000         \n"
-                  "    fild qword [rsp]  \n"
-                  "    fild qword [rsp+8]\n"
-                  "    fild qword [rsp]  \n"
-                  "    add rsp, 8        \n"
-                  "    fdiv              \n"
-                  "    fsqrt             \n"
-                  "    fmul              \n"
-                  "    fistp qword [rsp] \n")
-}
-
 static void TranslateGotoCmd(x86Buf* x86_buf, const Command* cmd)
 {
     ASSERT(cmd != nullptr);
@@ -536,100 +474,14 @@ static void TranslateGotoCmd(x86Buf* x86_buf, const Command* cmd)
     // PasteInt((uint32_t) offsets[command_i.args[0].value] - offsets[command_i.pc.value])
 }
 
-static void TranslateInCmd(x86Buf* x86_buf, const Command* cmd)
-{
-    ASSERT(cmd != nullptr);
-    ASSERT(cmd->cmd_code == CMD_IN);
-    VERIFY_x86BUF(x86_buf);
-
-    PasteBytes( PUSH_RDI, PUSH_RAX, PUSH_RSI,
-                MOV_R14                         )
-    PasteAddress((ADDRESS)InCmd                 )
-    PasteBytes  (CALL_R14   ,
-                 MOV_R14_RAX,
-                 POP_RSI, POP_RAX, POP_RDI,
-                 PUSH_R14                       )
-
-    TextTranslate("    push rdi           \n"
-                  "    push rax           \n"
-                  "    push rsi           \n"
-                  "    mov  r14, %p       \n"
-                  "    call r14           \n"
-                  "    mov  r14, rax      \n"
-                  "    push rsi           \n"
-                  "    push rax           \n"
-                  "    push rdi           \n"
-                  "    push r14           \n", InCmd)
-}
-
-static void TranslateOutCmd(x86Buf* x86_buf, const Command* cmd)
-{
-    ASSERT(cmd != nullptr);
-    ASSERT(cmd->cmd_code == CMD_OUT);
-    VERIFY_x86BUF(x86_buf);
-
-    PasteBytes  (POP_R14, PUSHA, MOV_RDI_R14, MOV_R14   )
-    PasteAddress((ADDRESS)OutCmd                        )
-    PasteBytes  (CALL_R14, POPA                         )
-
-    TextTranslate("    pusha            \n"
-                    "    pop  r14       \n"
-                    "    mov  rdi, r14  \n"
-                    "    mov  r14, %p   \n"
-                    "    call r14       \n"
-                    "    popa           \n", OutCmd)
-}
-
-static void TranslatePrintCmd(x86Buf* x86_buf, const Command* cmd)
-{
-    ASSERT(cmd != nullptr);
-    ASSERT(cmd->cmd_code == CMD_PRINT);
-    VERIFY_x86BUF(x86_buf);
-
-    PasteBytes  (PUSHA,                                   // PUSH_RDI, PUSH_RAX, PUSH_RSI,
-                 MOV_RDI                        )
-    PasteLongInt(cmd->args[0].value        )
-    PasteBytes  (MOV_R14                        )
-    PasteAddress((ADDRESS)PrintCmd              )
-    PasteBytes  (CALL_R14,
-                 POPA                           )         // POP_RSI, POP_RAX, POP_RDI
-
-    TextTranslate("    pusha              \n"
-                  "    pop  r14           \n"
-                  "    mov  rdi, %ld      \n"
-                  "    mov  r14, %p       \n"
-                  "    call r14           \n"
-                  "    popa               \n"
-                  , cmd->args[0].value, PrintCmd)
-}
-
 static void TranslateRetCmd(x86Buf* x86_buf, const Command* cmd)
 {
     ASSERT(cmd != nullptr);
     ASSERT(cmd->cmd_code == CMD_HLT || cmd->cmd_code == CMD_RET);
     VERIFY_x86BUF(x86_buf);
 
-    PasteByte(RET);
-
+    PasteByte(RET)
     TextTranslate("    ret\n")
-}
-
-static void TranslateHltCmd(x86Buf* x86_buf, const Command* cmd)
-{
-    ASSERT(cmd != nullptr);
-    ASSERT(cmd->cmd_code == CMD_HLT || cmd->cmd_code == CMD_RET);
-    VERIFY_x86BUF(x86_buf);
-
-    PasteBytes(ADD_RSP_X    )
-    PasteInt  (RAM_SIZE     )   // sub rsp, <RAM_size>
-    PasteBytes(POP_RBP     ,
-               POPA        ,
-               RET          )
-
-    TextTranslate("    add rsp, <RAM_size>\n"
-                  "    pop rbp            \n"
-                  "    popa               \n"
-                  "    ret                \n")
 }
 
 int TranslateCmd_x86(x86Buf* x86_buf, const Command* cmd)
@@ -639,27 +491,115 @@ int TranslateCmd_x86(x86Buf* x86_buf, const Command* cmd)
 
     switch (cmd->cmd_code)
     {
+        case CMD_PUSH:
+        {
+            TextTranslate("PUSH\n")
+            TranslatePushCmd(x86_buf, cmd);
+            break;
+        }
 
+        case CMD_POP:
+        {
+            TextTranslate("POP\n")
+            TranslatePopCmd(x86_buf, cmd);
+            break;
+        }
+
+        case CMD_ADD:
+        {
+            TextTranslate("ADD\n")
+            TranslateAddCmd(x86_buf, cmd);
+            break;
+        }
+
+        case CMD_SUB:
+        {
+            TextTranslate("SUB\n")
+            TranslateSubCmd(x86_buf, cmd);
+            break;
+        }
+
+        case CMD_MUL:
+        {
+            TextTranslate("MUL\n")
+            TranslateMulCmd(x86_buf, cmd);
+            break;
+        }
+
+        case CMD_DIV:
+        {
+            TextTranslate("DIV\n")
+            TranslateDivCmd(x86_buf, cmd);
+            break;
+        }
+
+        case CMD_CALL:
+        case CMD_JMP :
+        case CMD_JA  :
+        case CMD_JAE :
+        case CMD_JB  :
+        case CMD_JBE :
+        case CMD_JE  :
+        case CMD_JNE :
+        {
+            TranslateGotoCmd(x86_buf, cmd);
+            break;
+        }
+
+        case CMD_RET:
+        {
+            TextTranslate("RET\n")
+            TranslateRetCmd(x86_buf, cmd);
+            break;
+        }
+
+        case CMD_HLT:
+        {
+            TextTranslate("HLT\n")
+            PasteBytes(POPA)
+            TranslateRetCmd(x86_buf, cmd);
+            break;
+        }
     }
+}
+
+long int InCmd()
+{
+    long int num = 0;
+    printf("Type a number: ");
+    scanf("%ld", &num);
+    return num;
+}
+
+void OutCmd(long int num)
+{
+    printf("OUT: %016X\n", num);
+    // printf("OUT: %ld\n", num);
+}
+
+void PrintCmd(long int num)
+{
+    printf("ARGUMENT: %ld\n", num);
 }
 
 void InitRAM(const IR* ir, x86Buf* x86_buf)
 {
     TextTranslate("; Init RAM\n")
 
-    PasteBytes( SUB_RSP_X    )
-    PasteInt  ( RAM_SIZE     )  // sub rsp, <RAM_size>
-    PasteBytes( MOV_RBP_RSP  )  // mov rbp, rsp <-- rbp - address of RAM
-
-    // PasteBytes( REL_JMP      )
+    PasteBytes( SUB_RSP_X   )
+    PasteInt  ( RAM_SIZE    )   // sub rsp, <RAM_size>
+    PasteBytes( MOV_RBP_RSP )   // mov rbp, rsp
+                // REL_JMP      )
     // PasteInt(   RAM_SIZE     )
-    // x86_buf->RAM_addr = (ADDRESS)(BUF + 1 + sizeof(int));
-    // INDEX+=RAM_SIZE; PROG_SIZE+=RAM_SIZE;
 
+    // x86_buf->RAM_addr = (ADDRESS)(BUF + 1 + sizeof(int));
+
+    // INDEX+=RAM_SIZE; PROG_SIZE+=RAM_SIZE;
     PasteNOP
 
-    TextTranslate(  "    sub rsp, %d (RAM_size)\n"
-                    "    mov rbp, rsp          \n\n", RAM_SIZE)
+    TextTranslate(  "    sub rsp, <RAM_SIZE>    \n"
+                    "    mov rbp, rsp           \n\n")
+                    // "    jmp %u         \n\n", RAM_SIZE)
 }
 
 int IRTranslate_x86(const IR* ir, x86Buf* x86_buf)
@@ -673,19 +613,17 @@ int IRTranslate_x86(const IR* ir, x86Buf* x86_buf)
 
     TextTranslate("; Assembly logging of binary translation\n\n")
 
-    BYTE start[] = {PUSHA   ,
-                    FINIT   ,
-                    PUSH_RBP };
+    BYTE start[] = {PUSHA       ,
+                    MOV_RBP_RSP };
+                    // FINIT        };
     PasteCmd(start)
+    PasteNOP
 
     TextTranslate("start:       \n"
                   "    pusha    \n"
-                  "    finit    \n"
-                  "    push rbp \n\n")
+                  "    finit    \n\n")
 
-    PasteNOP
-
-    InitRAM(ir, x86_buf);
+    // InitRAM(ir, x86_buf);
 
     size_t offsets[ir->info.code_size] = {};
 
@@ -704,6 +642,7 @@ int IRTranslate_x86(const IR* ir, x86Buf* x86_buf)
             {
                 TextTranslate("PUSH\n")
                 TranslatePushCmd(x86_buf, &command_i);
+
                 break;
             }
 
@@ -711,13 +650,21 @@ int IRTranslate_x86(const IR* ir, x86Buf* x86_buf)
             {
                 TextTranslate("POP\n")
                 TranslatePopCmd(x86_buf, &command_i);
+
                 break;
             }
 
             case CMD_FABS:
             {
                 TextTranslate("FABS\n")
-                TranslateFabsCmd(x86_buf, &command_i);
+                PasteBytes( FILD_QWORD_RSP,	    // fild qword [rsp]
+                            FABS,               // fabs
+                            FISTP_QWORD_RSP)    // fistp qword [rsp]
+
+                TextTranslate("    fild qword [rsp] \n"
+                              "    fabs             \n"
+                              "    fistp qword [rsp]\n")
+
                 break;
             }
 
@@ -725,6 +672,7 @@ int IRTranslate_x86(const IR* ir, x86Buf* x86_buf)
             {
                 TextTranslate("ADD\n")
                 TranslateAddCmd(x86_buf, &command_i);
+
                 break;
             }
 
@@ -732,6 +680,7 @@ int IRTranslate_x86(const IR* ir, x86Buf* x86_buf)
             {
                 TextTranslate("SUB\n")
                 TranslateSubCmd(x86_buf, &command_i);
+
                 break;
             }
 
@@ -739,6 +688,7 @@ int IRTranslate_x86(const IR* ir, x86Buf* x86_buf)
             case CMD_FMUL:
             {
                 TranslateMulCmd(x86_buf, &command_i);
+
                 break;
             }
 
@@ -746,6 +696,7 @@ int IRTranslate_x86(const IR* ir, x86Buf* x86_buf)
             case CMD_FDIV:
             {
                 TranslateDivCmd(x86_buf, &command_i);
+
                 break;
             }
 
@@ -764,43 +715,116 @@ int IRTranslate_x86(const IR* ir, x86Buf* x86_buf)
 
             case CMD_FSQRT:
             {
-                TextTranslate("FSQRT\n")
-                TranslateFsqrtCmd(x86_buf, &command_i);
+                PasteByte ( PUSH_X                 )
+                PasteInt  ( 1000                   )        // push qword 1000
+                PasteBytes( FILD_QWORD_RSP  ,               // fild qword [rsp]
+                            FILD_QWORD_RSP_x, 0x08,         // fild qword [rsp+8]
+                            FILD_QWORD_RSP  ,               // fild qword [rsp]
+                            ADD_RSP_x       , 0x08,         // add rsp, 8
+                            FDIV ,                          // fdiv
+                            FSQRT,                          // fsqrt
+                            FMUL ,                          // fmul
+                            FISTP_QWORD_RSP        )        // fistp qword [rsp]
+
                 break;
             }
 
             case CMD_IN:
             {
                 TextTranslate("IN\n")
-                TranslateInCmd(x86_buf, &command_i);
+
+                PasteBytes( PUSH_RDI, PUSH_RAX, PUSH_RSI,
+                            MOV_R14                         )
+                PasteAddress((ADDRESS)InCmd                 )
+                PasteBytes  (CALL_R14   ,
+                             MOV_R14_RAX,
+                             POP_RSI, POP_RAX, POP_RDI,
+                             PUSH_R14                       )
+
+                // PasteBytes(PUSHA, POPA, PUSH_RAX)
+
+                // PasteBytes(PUSH_RAX)
+
+                // printf("%p\n", InCmd);
+
+                TextTranslate("    push rdi           \n"
+                              "    push rax           \n"
+                              "    push rsi           \n"
+                              "    mov  r14, %p       \n"
+                              "    call r14           \n"
+                              "    mov  r14, rax      \n"
+                              "    push rsi           \n"
+                              "    push rax           \n"
+                              "    push rdi           \n"
+                              "    push r14           \n", InCmd)
+
                 break;
             }
 
             case CMD_OUT:
             {
                 TextTranslate("OUT\n")
-                TranslateOutCmd(x86_buf, &command_i);
+
+                PasteBytes  (POP_R14, PUSHA, MOV_RDI_R14, MOV_R14   )
+                PasteAddress((ADDRESS)OutCmd                        )
+                PasteBytes  (CALL_R14, POPA                         )
+
+                // PasteBytes(POP_RAX, PUSHA, POPA)
+
+                // printf("%p\n", OutCmd);
+
+                TextTranslate("    pusha              \n"
+                              "    pop  r14           \n"
+                              "    mov  rdi, r14      \n"
+                              "    mov  r14, %p       \n"
+                              "    call r14           \n"
+                              "    popa               \n", OutCmd)
+
                 break;
             }
 
             case CMD_PRINT:
             {
                 TextTranslate("PRINT\n")
-                TranslatePrintCmd(x86_buf, &command_i);
+
+                PasteBytes  (PUSHA,                                   // PUSH_RDI, PUSH_RAX, PUSH_RSI,
+                             MOV_RDI                        )
+                PasteLongInt(command_i.args[0].value        )
+                PasteBytes  (MOV_R14                        )
+                PasteAddress((ADDRESS)PrintCmd              )
+                PasteBytes  (CALL_R14,
+                             POPA                           )           //POP_RSI, POP_RAX, POP_RDI      )
+
+                // PasteBytes(POP_RAX, PUSHA, POPA)
+
+                // printf("%p\n", PrintCmd);
+
+                TextTranslate("    pusha              \n"
+                              "    pop  r14           \n"
+                              "    mov  rdi, %ld      \n"
+                              "    mov  r14, %p       \n"
+                              "    call r14           \n"
+                              "    popa               \n"
+                              , command_i.args[0].value, PrintCmd)
+
                 break;
             }
 
             case CMD_RET:
             {
-                TextTranslate("RET\n")
+                TextTranslate("HLT\n")
                 TranslateRetCmd(x86_buf, &command_i);
+
                 break;
             }
 
             case CMD_HLT:
             {
                 TextTranslate("HLT\n")
-                TranslateHltCmd(x86_buf, &command_i);
+                BYTE end[] = {POPA};
+                PasteCmd(end)
+                TranslateRetCmd(x86_buf, &command_i);
+
                 break;
             }
         }
@@ -809,7 +833,9 @@ int IRTranslate_x86(const IR* ir, x86Buf* x86_buf)
         PasteNOP
     }
 
-    // PatchAddresses(ir, x86_buf, offsets);
+    // for(size_t i = 0; i < ir->info.code_size; i++) printf("%u ", offsets[i]);  printf("\n\n");
+
+    // PatchAddresses(ir, x86_buf);
 
     for (size_t index = 0; index < ir->n_cmds; index++)
     {
@@ -840,10 +866,6 @@ int IRTranslate_x86(const IR* ir, x86Buf* x86_buf)
 
     // x86BufDump(*x86_buf);
 
-    #ifndef N_TEXT_TRANSLATION_MODE
-        if (text_translation_file != nullptr) fclose(text_translation_file);
-    #endif
-
     return 1;
 }
 
@@ -871,7 +893,7 @@ int PatchAddresses(const IR* ir, x86Buf* x86_buf, size_t* offsets)
                 size_t jmp_cmd_len = 1;
 
                 if (command_i.cmd_code != CMD_CALL && command_i.cmd_code != CMD_JMP)
-                    jmp_cmd_len = 9;    // jmp с параметрами
+                    jmp_cmd_len = 7;    // jmp с параметрами
 
                 uint32_t cmd_addr = offsets[command_i.pc];
                 uint32_t jmp_addr = offsets[command_i.args[0].value] - (cmd_addr + jmp_cmd_len + sizeof(int));
@@ -886,6 +908,6 @@ int PatchAddresses(const IR* ir, x86Buf* x86_buf, size_t* offsets)
 
 #undef  BUF
 #undef  INDEX
-#undef  BUF_SIZE
-#undef  PROG_SIZE
+#define BUF_SIZE
+#define PROG_SIZE
 #undef  PASTE

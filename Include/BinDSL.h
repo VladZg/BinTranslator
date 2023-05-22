@@ -55,8 +55,6 @@
             PUSH_RCX,   \
             PUSH_RDX,   \
             PUSH_RBX,   \
-            PUSH_RSP,   \
-            PUSH_RBP,   \
             PUSH_RSI,   \
             PUSH_RDI,   \
             PUSH_R8 ,   \
@@ -77,8 +75,6 @@
             POP_R8 ,    \
             POP_RDI,    \
             POP_RSI,    \
-            POP_RBP,    \
-            POP_RSP,    \
             POP_RBX,    \
             POP_RDX,    \
             POP_RCX,    \
@@ -87,7 +83,10 @@
     #define PUSH_X  0x68
     #define PUSH_0  0x6A, 0x00
 
-    #define ADD_RSP_x   0x48, 0x83, 0xc4
+    #define ADD_RSP_x   0x48, 0x83, 0xC4
+    #define ADD_RSP_X   0x48, 0x81, 0xC4
+    #define SUB_RSP_x   0x48, 0x83, 0xEC
+    #define SUB_RSP_X   0x48, 0x81, 0xEC
     #define ADD_RSI_RDI 0x48, 0x01, 0xFE
     #define ADD_R13_R14 0x4D, 0x01, 0xF5
     #define SUB_RSI_RDI 0x48, 0x29, 0xFE
@@ -135,6 +134,7 @@
     #define CMP_R13D_R14D       0x45, 0x39, 0xF5
     #define CMP_R13_R14         0x4D, 0x39, 0xF5
 
+    #define FINIT               0x9B, 0xDB, 0xE3
     #define FABS                0xD9, 0xE1
     #define FDIV                0xDE, 0xF9
     #define FMUL                0xDE, 0xC9

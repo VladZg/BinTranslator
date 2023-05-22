@@ -20,7 +20,7 @@ run_asm_compilation:
 run_app:
 	@$(TARGET) ./$(filename).exe
 
-BYTE_CHECK_DIR 		= ./ByteCheck
+BYTE_CHECK_DIR 		= ./Debug/ByteCheck
 BYTE_CHECK_TARGET 	= $(BYTE_CHECK_DIR)/byte_check
 
 check:

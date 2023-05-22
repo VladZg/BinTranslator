@@ -6,13 +6,15 @@
 #include "./IR.h"
 
 #define MAX_PROGRAMM_SIZE 409600
+#define RAM_SIZE          800
 
 struct x86Buf
 {
-    BYTE*  buf      ;
-    size_t buf_size ;
-    size_t prog_size;
-    size_t index    ;
+    BYTE*   buf      ;
+    size_t  buf_size ;
+    size_t  prog_size;
+    size_t  index    ;
+    ADDRESS RAM_addr ;
 };
 
 void PasteByteInBuf(x86Buf* x86_buf, BYTE byte);

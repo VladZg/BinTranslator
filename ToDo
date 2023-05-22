@@ -1,4 +1,4 @@
-push: (добавить) [<>] (push from RAM)
+push: (done) ?
 pop:  (добавить) [<>] (pop to RAM), [num], [reg], [num+reg]
 
 jmp:  (done)
@@ -22,7 +22,7 @@ print: (добавить)
 call: (done)
 ret:  (done)
 
-init: (добавить) инициализация RAM, сохранение регистров
-hlt:  (добавить) возврат из программы, восстановление регистров
+init: (done)
+hlt:  (done)
 
 

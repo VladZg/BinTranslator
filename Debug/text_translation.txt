@@ -1,0 +1,92 @@
+; Assembly logging of binary translation
+
+start:       
+    pusha    
+    finit    
+    push rbp 
+
+; Init RAM
+    sub rsp, 800 (RAM_size)
+    mov rbp, rsp          
+
+; [0] PUSH
+    mov   r14, 0x0000000000000001 
+    push  r14          
+
+; [1] POP
+    pop  RAX
+
+; [2] PUSH
+    mov   r14, 0x0000000000000003 
+    push  r14          
+    pop  r13                 
+    mov  r14, [rbp + r13 * 8]
+    push r14                 
+
+; [3] OUT
+    pusha            
+    pop  r14       
+    mov  rdi, r14  
+    mov  r14, 0x5564d22ea730   
+    call r14       
+    popa           
+
+; [4] PUSH
+    push RAX
+    pop  r13                 
+    mov  r14, [rbp + r13 * 8]
+    push r14                 
+
+; [5] OUT
+    pusha            
+    pop  r14       
+    mov  rdi, r14  
+    mov  r14, 0x5564d22ea730   
+    call r14       
+    popa           
+
+; [6] PUSH
+    mov   r14, 0x0000000000000001 
+    push  r14          
+    push RAX
+    pop  r13     
+    pop  r14     
+    add  r13, r14
+    push r13     
+    pop  r13                 
+    mov  r14, [rbp + r13 * 8]
+    push r14                 
+
+; [7] OUT
+    pusha            
+    pop  r14       
+    mov  rdi, r14  
+    mov  r14, 0x5564d22ea730   
+    call r14       
+    popa           
+
+; [8] PUSH
+    mov   r14, 0x0000000000000007 
+    push  r14          
+    pop  r13                 
+    mov  r14, [rbp + r13 * 8]
+    push r14                 
+
+; [9] OUT
+    pusha            
+    pop  r14       
+    mov  rdi, r14  
+    mov  r14, 0x5564d22ea730   
+    call r14       
+    popa           
+
+; [10] POP
+
+; [11] POP
+
+; [12] HLT
+    add rsp, <RAM_size>
+    pop rbp            
+    popa               
+    ret                
+
