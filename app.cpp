@@ -35,8 +35,8 @@ int Execute_x86Code(const x86Buf* x86_buf)
 
     void (*exec_code)() = (void (*)())(x86_buf->buf);
 
-    for (int i = 0; i < 10000; i++)
-        exec_code();
+    // for (int i = 0; i < 10000; i++)
+    exec_code();
 
     mprotect_res = mprotect(x86_buf->buf, x86_buf->buf_size, PROT_READ | PROT_WRITE);
     ASSERT(mprotect_res == 0);
@@ -65,8 +65,9 @@ int main(const int argc, const char** argv)
     IRTranslate_x86(&ir, &x86_buf);
     x86BufDump(&x86_buf, MAX(256, x86_buf.prog_size+1));
 
-    GetTime(
-    Execute_x86Code(&x86_buf);)
+    // GetTime(
+    Execute_x86Code(&x86_buf);
+    // )
 
     IRDtor(&ir);
     x86BufDtor(&x86_buf);

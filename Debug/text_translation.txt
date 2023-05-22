@@ -9,9 +9,17 @@ start:
     sub rsp, 800 (RAM_size)
     mov rbp, rsp          
 
-; [0] PUSH
-    mov   r14, 0x000000000000000A 
-    push  r14          
+; [0] IN
+    push rdi           
+    push rax           
+    push rsi           
+    mov  r14, 0x560e75b51d30       
+    call r14           
+    mov  r14, rax      
+    push rsi           
+    push rax           
+    push rdi           
+    push r14           
 
 ; [1] POP
     pop  RBX
@@ -23,37 +31,41 @@ start:
 ; [3] POP
     pop  RAX
 
-; [4] ; CALL
+; [4] PUSH
+    push RBX
+
+; [5] PUSH
+    mov   r14, 0x000000000000029A 
+    push  r14          
+
+; [6] ; JE
+    pop  r14       
+    pop  r13       
+    cmp  r13, r14  
+    JE 0
+
+; [7] ; CALL
     CALL 0
 
-; [5] HLT
+; [8] PUSH
+    push RAX
+
+; [9] OUT
+    pusha            
+    pop  r14       
+    mov  rdi, r14  
+    mov  r14, 0x560e75b51cf0   
+    call r14       
+    popa           
+
+; [10] ; JMP
+    JMP 0
+
+; [11] HLT
     add rsp, <RAM_size>
     pop rbp            
     popa               
     ret                
-
-; [6] PUSH
-    push RBX
-
-; [7] PUSH
-    mov   r14, 0x0000000000000001 
-    push  r14          
-
-; [8] ; JAE
-    pop  r14       
-    pop  r13       
-    cmp  r13, r14  
-    JAE 0
-
-; [9] PUSH
-    mov   r14, 0x0000000000000000 
-    push  r14          
-
-; [10] POP
-    pop  RAX
-
-; [11] ; JMP
-    JMP 0
 
 ; [12] PUSH
     push RBX
@@ -62,22 +74,45 @@ start:
     mov   r14, 0x0000000000000001 
     push  r14          
 
-; [14] ; JNE
+; [14] ; JAE
+    pop  r14       
+    pop  r13       
+    cmp  r13, r14  
+    JAE 0
+
+; [15] PUSH
+    mov   r14, 0x0000000000000000 
+    push  r14          
+
+; [16] POP
+    pop  RAX
+
+; [17] ; JMP
+    JMP 0
+
+; [18] PUSH
+    push RBX
+
+; [19] PUSH
+    mov   r14, 0x0000000000000001 
+    push  r14          
+
+; [20] ; JNE
     pop  r14       
     pop  r13       
     cmp  r13, r14  
     JNE 0
 
-; [15] ; JMP
+; [21] ; JMP
     JMP 0
 
-; [16] PUSH
+; [22] PUSH
     push RBX
 
-; [17] PUSH
+; [23] PUSH
     push RAX
 
-; [18] MUL
+; [24] MUL
     pop  r13     
     pop  r14     
     push rax     
@@ -87,10 +122,10 @@ start:
     pop  rax     
     push r13     
 
-; [19] POP
+; [25] POP
     pop  RAX
 
-; [20] PUSH
+; [26] PUSH
     mov   r14, 0x00000000FFFFFFFF 
     push  r14          
     push RBX
@@ -99,12 +134,12 @@ start:
     add  r13, r14
     push r13     
 
-; [21] POP
+; [27] POP
     pop  RBX
 
-; [22] ; CALL
+; [28] ; CALL
     CALL 0
 
-; [23] RET
+; [29] RET
     ret
 

@@ -1,21 +1,21 @@
 main:
 {
-    // in
-    push 10
+    in
+    // push 10
     pop rbx
     push 1
     pop rax
 
-    // push rbx
-    // push 666
-    // je exit
+    push rbx
+    push 666
+    je exit
 
     call factorial
 
-    // push rax
-    // out
+    push rax
+    out
 
-    // jmp main
+    jmp main
 
 exit:
     hlt
