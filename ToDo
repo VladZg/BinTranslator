@@ -1,0 +1,28 @@
+push: (done) ?
+pop:  (добавить) [<>] (pop to RAM), [num], [reg], [num+reg]
+
+jmp:  (done)
+
+add:  (done)
+sub:  (done)
+mul:  (done)
+fmul: (done)
+div:  (done)
+fdiv: (done)
+fabs: (done)
+sin:  (добавить)
+cos:  (добавить)
+fsqrt: (done)
+pow:  (добавить)
+
+in:    (переделать) собственная asm реализация, сохранение регистров
+out:   (переделать) собственная asm реализация, сохранение регистров
+print: (добавить)
+
+call: (done)
+ret:  (done)
+
+init: (done)
+hlt:  (done)
+
+
