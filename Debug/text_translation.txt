@@ -13,7 +13,7 @@ start:
     push rdi           
     push rax           
     push rsi           
-    mov  r14, 0x560e75b51d30       
+    mov  r14, 0x55c2f8676d30       
     call r14           
     mov  r14, rax      
     push rsi           
@@ -51,10 +51,10 @@ start:
     push RAX
 
 ; [9] OUT
-    pusha            
+    pusha          
     pop  r14       
     mov  rdi, r14  
-    mov  r14, 0x560e75b51cf0   
+    mov  r14, 0x55c2f8676cf0   
     call r14       
     popa           
 
